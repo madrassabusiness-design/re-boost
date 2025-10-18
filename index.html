@@ -76,59 +76,6 @@
             }
         }
 
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         /* En-tête avec animation */
         .header {
             background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
@@ -164,23 +111,6 @@
         .logo h1 {
             font-weight: 700;
             font-size: 1.8rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .logo h1::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: var(--primary-yellow);
-            transition: width 0.5s ease;
-        }
-
-        .logo h1:hover::after {
-            width: 100%;
         }
 
         /* Section de bienvenue avec animations */
@@ -207,13 +137,6 @@
             animation: fadeInUp 1s ease-out 0.4s both;
         }
 
-        .welcome-illustration {
-            font-size: 4rem;
-            color: var(--primary-yellow);
-            margin-top: 2rem;
-            animation: bounce 2s infinite 1s;
-        }
-
         /* Grille des réseaux sociaux */
         .social-grid {
             display: flex;
@@ -236,24 +159,6 @@
             text-decoration: none;
             transition: var(--transition);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .social-icon::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .social-icon:hover::before {
-            opacity: 1;
         }
 
         .social-icon:hover {
@@ -266,7 +171,7 @@
         .social-icon.youtube { background: linear-gradient(135deg, #FF0000, #CC0000); }
         .social-icon.instagram { background: linear-gradient(135deg, #E4405F, #405DE6, #833AB4); }
 
-        /* Section d'authentification avec animations */
+        /* Section d'authentification */
         .auth-section {
             padding: 4rem 0;
             background-color: var(--light-blue);
@@ -291,27 +196,11 @@
             cursor: pointer;
             transition: var(--transition);
             position: relative;
-            overflow: hidden;
-        }
-
-        .tab-btn::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--primary-blue);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .tab-btn.active::after {
-            transform: scaleX(1);
         }
 
         .tab-btn.active {
             color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
         }
 
         .auth-form {
@@ -337,7 +226,6 @@
 
         .form-group {
             margin-bottom: 1.5rem;
-            animation: fadeInUp 0.6s ease-out;
         }
 
         .form-group label {
@@ -346,7 +234,7 @@
             font-weight: 500;
         }
 
-        .form-group input, .form-group textarea, .form-group select {
+        .form-group input {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #d1d5db;
@@ -355,14 +243,13 @@
             transition: var(--transition);
         }
 
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        .form-group input:focus {
             outline: none;
             border-color: var(--secondary-blue);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-            transform: translateY(-2px);
         }
 
-        /* Boutons avec animations */
+        /* Boutons */
         .btn {
             display: inline-block;
             padding: 0.75rem 1.5rem;
@@ -373,23 +260,6 @@
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn:hover::before {
-            left: 100%;
         }
 
         .btn-primary {
@@ -399,8 +269,7 @@
 
         .btn-primary:hover {
             background-color: var(--secondary-blue);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
@@ -410,7 +279,6 @@
 
         .btn-secondary:hover {
             background-color: var(--gray-dark);
-            transform: translateY(-3px);
         }
 
         .btn-success {
@@ -420,42 +288,6 @@
 
         .btn-success:hover {
             background-color: #0da271;
-            transform: translateY(-3px);
-        }
-
-        .btn-warning {
-            background-color: var(--warning);
-            color: var(--white);
-        }
-
-        .btn-warning:hover {
-            background-color: #e58a08;
-            transform: translateY(-3px);
-        }
-
-        .btn-error {
-            background-color: var(--error);
-            color: var(--white);
-        }
-
-        .btn-error:hover {
-            background-color: #dc2626;
-            transform: translateY(-3px);
-        }
-
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .btn-info {
-            background-color: var(--primary-yellow);
-            color: var(--white);
-        }
-
-        .btn-info:hover {
-            background-color: #e58a08;
-            transform: translateY(-3px);
         }
 
         /* Bouton WhatsApp flottant */
@@ -474,14 +306,11 @@
             font-size: 1.8rem;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            animation: pulse 2s infinite, float 3s ease-in-out infinite;
-            transition: var(--transition);
             text-decoration: none;
         }
 
         .whatsapp-float:hover {
             transform: scale(1.1);
-            animation: none;
         }
 
         /* Pied de page */
@@ -489,7 +318,6 @@
             background-color: var(--gray-dark);
             color: var(--white);
             padding: 2rem 0;
-            animation: fadeIn 1s ease-out;
         }
 
         .footer-content {
@@ -502,27 +330,6 @@
             color: var(--white);
             margin-left: 1.5rem;
             text-decoration: none;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .footer-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary-yellow);
-            transition: width 0.3s ease;
-        }
-
-        .footer-links a:hover::after {
-            width: 100%;
-        }
-
-        .footer-links a:hover {
-            color: var(--light-yellow);
         }
 
         /* Modal */
@@ -537,23 +344,17 @@
             z-index: 1001;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease-out;
         }
 
         .modal-content {
             background-color: var(--white);
             padding: 2rem;
             border-radius: var(--radius);
-            max-width: 800px;
+            max-width: 600px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        .modal-large {
-            max-width: 1000px;
         }
 
         .close {
@@ -563,20 +364,6 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--gray);
-            transition: var(--transition);
-        }
-
-        .close:hover {
-            color: var(--primary-blue);
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            margin-top: 1.5rem;
-        }
-
-        .modal-body p {
-            margin-bottom: 1rem;
         }
 
         /* Styles pour le tableau de bord */
@@ -585,7 +372,6 @@
             color: var(--white);
             padding: 1rem 0;
             box-shadow: var(--shadow);
-            animation: slideInLeft 0.8s ease-out;
         }
 
         .dashboard-nav {
@@ -608,7 +394,6 @@
         .dashboard-welcome {
             text-align: center;
             margin-bottom: 3rem;
-            animation: fadeInUp 1s ease-out;
         }
 
         .dashboard-welcome h2 {
@@ -630,42 +415,16 @@
             box-shadow: var(--shadow);
             text-align: center;
             transition: var(--transition);
-            animation: fadeInUp 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--primary-yellow));
-            transform: scaleX(0);
-            transition: transform 0.5s ease;
-        }
-
-        .action-card:hover::before {
-            transform: scaleX(1);
         }
 
         .action-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
         }
 
         .action-icon {
             font-size: 3rem;
             color: var(--primary-yellow);
             margin-bottom: 1rem;
-            transition: var(--transition);
-        }
-
-        .action-card:hover .action-icon {
-            transform: scale(1.1) rotate(5deg);
-            color: var(--primary-blue);
         }
 
         .action-card h3 {
@@ -676,11 +435,6 @@
         .action-card p {
             margin-bottom: 1.5rem;
             color: var(--gray);
-        }
-
-        .action-card .btn {
-            width: auto;
-            padding: 0.75rem 2rem;
         }
 
         /* Page cachée par défaut */
@@ -700,7 +454,6 @@
             background: var(--white);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            animation: fadeInUp 1s ease-out;
         }
 
         .license-info {
@@ -708,12 +461,6 @@
             padding: 1rem;
             border-radius: var(--radius);
             margin-bottom: 1.5rem;
-            transition: var(--transition);
-        }
-
-        .license-info:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .license-key {
@@ -729,7 +476,6 @@
             padding: 1rem;
             border-radius: var(--radius);
             margin-bottom: 1rem;
-            animation: slideInRight 0.5s ease-out;
         }
 
         .alert-success {
@@ -743,195 +489,6 @@
             color: #991b1b;
             border: 1px solid #fecaca;
         }
-
-        .alert-warning {
-            background-color: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fde68a;
-        }
-
-        /* Tableau des licences */
-        .licenses-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .licenses-table th, .licenses-table td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-            transition: var(--transition);
-        }
-
-        .licenses-table th {
-            background-color: var(--light-blue);
-            font-weight: 600;
-        }
-
-        .licenses-table tr:hover {
-            background-color: var(--gray-light);
-        }
-
-        .licenses-table tr:hover td {
-            transform: translateX(5px);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .status-badge:hover {
-            transform: scale(1.05);
-        }
-
-        .status-active {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-inactive {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-used {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Styles pour le modal de choix de langue */
-        .language-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .language-option {
-            background: var(--light-blue);
-            padding: 2rem;
-            border-radius: var(--radius);
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .language-option:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-blue);
-            box-shadow: var(--shadow);
-        }
-
-        .language-option.selected {
-            border-color: var(--primary-blue);
-            background: var(--primary-blue);
-            color: var(--white);
-        }
-
-        .language-option i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .language-option h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        /* Styles pour le modal des vidéos de création de compte */
-        .video-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .video-tab {
-            padding: 1rem 2rem;
-            background: none;
-            border: none;
-            border-bottom: 3px solid transparent;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .video-tab.active {
-            border-bottom-color: var(--primary-blue);
-            color: var(--primary-blue);
-        }
-
-        .video-container {
-            display: none;
-            text-align: center;
-        }
-
-        .video-container.active {
-            display: block;
-        }
-
-        .video-placeholder {
-            width: 100%;
-            height: 400px;
-            background: var(--gray-light);
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            border: 2px dashed var(--gray);
-        }
-
-        .video-placeholder i {
-            font-size: 4rem;
-            color: var(--gray);
-        }
-
-        .video-instructions {
-            background: var(--light-blue);
-            padding: 1rem;
-            border-radius: var(--radius);
-            margin-top: 1rem;
-        }
-
-        /* Section du bouton "Comment créer un compte" */
-        .tutorial-section {
-            text-align: center;
-            padding: 2rem 0;
-            background: var(--white);
-        }
-
-        .tutorial-content {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .tutorial-content h3 {
-            margin-bottom: 1rem;
-            color: var(--primary-blue);
-        }
-
-        .tutorial-content p {
-            margin-bottom: 1.5rem;
-            color: var(--gray);
-        }
-
-        /* Supprimé la colonne des réseaux sociaux flottants */
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -954,10 +511,6 @@
                 font-size: 2rem;
             }
             
-            .welcome-content p {
-                font-size: 1rem;
-            }
-            
             .auth-tabs {
                 flex-direction: column;
                 width: 100%;
@@ -965,15 +518,6 @@
             
             .tab-btn {
                 width: 100%;
-            }
-
-            .licenses-table {
-                display: block;
-                overflow-x: auto;
-            }
-
-            .action-buttons {
-                flex-direction: column;
             }
 
             .social-grid {
@@ -991,39 +535,17 @@
                 gap: 1rem;
                 text-align: center;
             }
-
-            .logo {
-                justify-content: center;
-            }
-
-            .language-options {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .video-tabs {
-                flex-direction: column;
-            }
-
-            .video-tab {
-                width: 100%;
-            }
-
-            .video-placeholder {
-                height: 250px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Page d'accueil (non connecté) -->
+    <!-- Page d'accueil (activation de licence) -->
     <div id="home-page" class="page active">
         <!-- En-tête -->
         <header class="header">
             <div class="container">
                 <div class="header-content">
                     <div class="logo">
-                        <!-- Place pour le logo - Remplacez logo.png par votre image -->
                         <img src="/Images/LOGO RE-BOOST.jpg" alt="RE-BOOST Logo" class="logo-img">
                         <h1>RE-BOOST</h1>
                     </div>
@@ -1039,9 +561,8 @@
             <div class="container">
                 <div class="welcome-content">
                     <h2>Bienvenue sur RE-BOOST</h2>
-                    <p>Votre partenaire dédié à la croissance de votre influence digitale. Notre plateforme vous offre tous les outils nécessaires pour monétiser efficacement votre compte TikTok et booster la visibilité sur l'ensemble de vos réseaux sociaux.</p>
+                    <p>Votre partenaire dédié à la croissance de votre influence digitale. Activez votre licence pour accéder à toutes les fonctionnalités.</p>
                     
-                    <!-- Grille des réseaux sociaux -->
                     <div class="social-grid">
                         <a href="#" class="social-icon tiktok">
                             <i class="fab fa-tiktok"></i>
@@ -1056,97 +577,48 @@
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
-                    
-                    <div class="welcome-illustration">
-                        <i class="fas fa-rocket"></i>
-                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section tutoriel création de compte -->
-        <section class="tutorial-section">
-            <div class="container">
-                <div class="tutorial-content">
-                    <h3>Nouveau sur RE-BOOST ?</h3>
-                    <p>Regardez notre tutoriel vidéo pour apprendre à créer votre compte en quelques minutes</p>
-                    <button id="tutorial-btn" class="btn btn-info">
-                        <i class="fas fa-play-circle"></i> Comment créer un compte RE-BOOST
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section d'authentification -->
+        <!-- Section d'activation de licence -->
         <section class="auth-section">
             <div class="container">
                 <div class="auth-tabs">
-                    <button class="tab-btn active" data-tab="login">Connexion</button>
-                    <button class="tab-btn" data-tab="register">Inscription</button>
-                    <button class="tab-btn" data-tab="license">Activer Licence</button>
-                    <button class="tab-btn" data-tab="admin" id="admin-tab">Admin</button>
+                    <button class="tab-btn active" data-tab="license">Activer Licence</button>
+                    <button class="tab-btn" data-tab="admin" id="admin-tab">Administration</button>
                 </div>
 
-                <!-- Formulaire de connexion -->
-                <form id="login-form" class="auth-form active">
-                    <h3>Connectez-vous à votre compte</h3>
-                    <div class="form-group">
-                        <label for="login-email">Email</label>
-                        <input type="email" id="login-email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Mot de passe</label>
-                        <input type="password" id="login-password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Se connecter</button>
-                </form>
-
-                <!-- Formulaire d'inscription -->
-                <form id="register-form" class="auth-form">
-                    <h3>Créez votre compte</h3>
-                    <div class="form-group">
-                        <label for="register-name">Nom complet</label>
-                        <input type="text" id="register-name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-email">Email</label>
-                        <input type="email" id="register-email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Mot de passe</label>
-                        <input type="password" id="register-password" name="password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-confirm">Confirmer le mot de passe</label>
-                        <input type="password" id="register-confirm" name="confirm_password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">S'inscrire</button>
-                </form>
-
                 <!-- Formulaire d'activation de licence -->
-                <form id="license-form" class="auth-form">
+                <form id="license-form" class="auth-form active">
                     <h3>Activer votre licence</h3>
                     <div class="form-group">
                         <label for="license-key">Clé de licence</label>
-                        <input type="text" id="license-key" name="license_key" placeholder="Entrez votre clé de licence" required>
+                        <input type="text" id="license-key" name="license_key" placeholder="Entrez la clé de licence fournie par l'administrateur" required>
                     </div>
                     <div class="form-group">
-                        <label for="license-email">Email associé</label>
-                        <input type="email" id="license-email" name="email" placeholder="Email utilisé lors de l'achat" required>
+                        <label for="user-email">Votre email</label>
+                        <input type="email" id="user-email" name="email" placeholder="Votre adresse email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-name">Votre nom complet</label>
+                        <input type="text" id="user-name" name="name" placeholder="Votre nom complet" required>
                     </div>
                     <button type="submit" class="btn btn-success">Activer la licence</button>
+                    
                     <div class="license-info">
                         <p><strong>Comment obtenir une licence ?</strong></p>
-                        <p>Contactez-nous sur WhatsApp pour acheter votre licence unique.</p>
+                        <p>Contactez l'administrateur sur WhatsApp pour acheter votre licence.</p>
+                        <p>Seul l'administrateur peut générer et attribuer des licences.</p>
                     </div>
                 </form>
 
                 <!-- Panel d'administration -->
                 <div id="admin-form" class="auth-form">
-                    <h3>Administration des licences</h3>
+                    <h3>Espace Administrateur</h3>
                     <div class="form-group">
                         <label for="admin-password">Mot de passe administrateur</label>
-                        <input type="password" id="admin-password" placeholder="Entrez le mot de passe administrateur">
+                        <input type="password" id="admin-password" placeholder="Entrez le mot de passe administrateur" required>
                     </div>
                     <button id="admin-login" class="btn btn-primary">Accéder à l'administration</button>
                     
@@ -1154,24 +626,33 @@
                         <h4>Gestion des licences</h4>
                         
                         <div class="form-group">
-                            <label for="new-license-key">Nouvelle clé de licence</label>
-                            <input type="text" id="new-license-key" placeholder="Ex: REBOOST-2025-ABCD-1234">
+                            <label for="client-email">Email du client</label>
+                            <input type="email" id="client-email" placeholder="Email du client (optionnel)">
                         </div>
                         <div class="form-group">
-                            <label for="new-license-email">Email associé (optionnel)</label>
-                            <input type="email" id="new-license-email" placeholder="Si vide, n'importe quel email pourra l'activer">
+                            <label for="client-name">Nom du client</label>
+                            <input type="text" id="client-name" placeholder="Nom du client (optionnel)">
                         </div>
                         <div class="form-group">
-                            <label for="license-status">Statut</label>
-                            <select id="license-status">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
+                            <label for="license-type">Type de licence</label>
+                            <select id="license-type">
+                                <option value="standard">Standard (1 mois)</option>
+                                <option value="premium">Premium (3 mois)</option>
+                                <option value="vip">VIP (12 mois)</option>
                             </select>
                         </div>
-                        <button id="add-license" class="btn btn-success">Ajouter la licence</button>
+                        <button id="generate-license" class="btn btn-success">Générer une nouvelle licence</button>
+                        
+                        <div id="new-license-result" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--light-blue); border-radius: var(--radius);">
+                            <h5>Nouvelle licence générée :</h5>
+                            <p><strong>Clé :</strong> <span id="generated-license-key" class="license-key"></span></p>
+                            <p><strong>Type :</strong> <span id="generated-license-type"></span></p>
+                            <p><strong>Expiration :</strong> <span id="generated-license-expiry"></span></p>
+                            <button id="copy-license" class="btn btn-primary btn-small">Copier la clé</button>
+                        </div>
                         
                         <div style="margin-top: 2rem;">
-                            <h4>Licences existantes</h4>
+                            <h4>Licences actives</h4>
                             <div id="licenses-list"></div>
                         </div>
                     </div>
@@ -1191,21 +672,20 @@
                     <p>&copy; 2025 RE-BOOST. Tous droits réservés.</p>
                     <div class="footer-links">
                         <a href="#" id="mentions-legales">Mentions légales</a>
-                       <a href="mailto:masamunatresor6@gmail.com?subject=Bonjour&body=Bonjour%20Trésor,%0A%0AMon%20messa">Contact</a>
+                        <a href="mailto:masamunatresor6@gmail.com">Contact</a>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- Page Tableau de bord (connecté) -->
+    <!-- Page Tableau de bord (après activation) -->
     <div id="dashboard-page" class="page">
         <!-- En-tête du tableau de bord -->
         <header class="dashboard-header">
             <div class="container">
                 <div class="dashboard-nav">
                     <div class="logo">
-                        <!-- Place pour le logo - Remplacez logo.png par votre image -->
                         <img src="/Images/LOGO RE-BOOST.jpg" alt="RE-BOOST Logo" class="logo-img">
                         <h1>RE-BOOST</h1>
                     </div>
@@ -1224,7 +704,6 @@
                     <h2>Bienvenue sur votre tableau de bord</h2>
                     <p>Accédez à toutes les fonctionnalités de RE-BOOST</p>
                     
-                    <!-- Grille des réseaux sociaux -->
                     <div class="social-grid">
                         <a href="#" class="social-icon tiktok">
                             <i class="fab fa-tiktok"></i>
@@ -1247,7 +726,7 @@
                     <div class="license-info">
                         <p><strong>Statut:</strong> <span id="license-status">Active</span></p>
                         <p><strong>Clé:</strong> <span id="license-key-display" class="license-key"></span></p>
-                        <p><strong>Appareil:</strong> <span id="device-id"></span></p>
+                        <p><strong>Type:</strong> <span id="license-type-display">Standard</span></p>
                         <p><strong>Expiration:</strong> <span id="license-expiry">Illimitée</span></p>
                     </div>
                 </div>
@@ -1257,9 +736,9 @@
                         <div class="action-icon">
                             <i class="fas fa-video"></i>
                         </div>
-                        <h3>Télécharger les cours</h3>
-                        <p>Accédez à nos ressources de formation en vidéo</p>
-                         <button id="video-btn" class="btn btn-primary">VIDÉO</button>
+                        <h3>Formations Vidéo</h3>
+                        <p>Accédez à nos ressources de formation exclusives</p>
+                        <button id="training-btn" class="btn btn-primary">ACCÉDER AUX FORMATIONS</button>
                     </div>
 
                     <div class="action-card">
@@ -1268,14 +747,14 @@
                         </div>
                         <h3>Booster vos réseaux</h3>
                         <p>Augmentez votre visibilité sur les réseaux sociaux</p>
-                         <a href="https://clic-booster.com" target="_blank" class="btn btn-primary">BOOSTER</a>
+                        <a href="https://clic-booster.com" target="_blank" class="btn btn-primary">BOOSTER MES RÉSEAUX</a>
                     </div>
                 </div>
             </div>
         </main>
 
         <!-- Bouton WhatsApp flottant -->
-        <a href="https://wa.me/243896639509?text=👋 Bonjour et bienvenue sur RE-BOOST ! Comment pouvons-nous vous aider aujourd'hui ?" class="whatsapp-float" target="_blank">
+        <a href="https://wa.me/243896639509?text=👋 Bonjour, j'ai besoin d'assistance pour RE-BOOST" class="whatsapp-float" target="_blank">
             <i class="fab fa-whatsapp"></i>
         </a>
 
@@ -1286,779 +765,266 @@
                     <p>&copy; 2025 RE-BOOST. Tous droits réservés.</p>
                     <div class="footer-links">
                         <a href="#" id="mentions-legales-dashboard">Mentions légales</a>
-                        <a href="mailto:masamunatresor6@gmail.com?subject=Bonjour&body=Bonjour%20Trésor,%0A%0AMon%20messa">Contact</a>
+                        <a href="mailto:masamunatresor6@gmail.com">Contact</a>
                     </div>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- Modal Mentions Légales -->
-    <div id="mentions-modal" class="modal">
+    <!-- Modal des formations -->
+    <div id="training-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Mentions Légales</h2>
+            <h2>Formations RE-BOOST</h2>
             <div class="modal-body">
-                <p><strong>Éditeur du site :</strong></p>
-                <p>RE-BOOST By Trésor MASAMUNA</p>
+                <p>Sélectionnez la formation que vous souhaitez télécharger :</p>
                 
-                <p><strong>Hébergement :</strong></p>
-                <p>InfinityFree</p>
-                
-                <p><strong>Contact :</strong></p>
-                <p>Email : masamunatresor6@gmail.com</p>
-                <p>Téléphone : +243 89 66 39 509</p>
-                
-                <p><strong>Propriété intellectuelle :</strong></p>
-                <p>L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.</p>
-                
-                <p><strong>Protection des données personnelles :</strong></p>
-                <p>Conformément à la loi "Informatique et Libertés" du 6 janvier 1978 modifiée, vous disposez d'un droit d'accès, de rectification et de suppression des données vous concernant. Vous pouvez exercer ce droit en nous contactant à l'adresse : contact@re-boost.com</p>
-
-                <p><strong>Licences logicielles :</strong></p>
-                <p>Chaque licence RE-BOOST est valable pour un seul appareil. Toute tentative d'utilisation sur plusieurs appareils entraînera la suspension de la licence.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal d'édition de licence -->
-    <div id="edit-license-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="close-edit-modal">&times;</span>
-            <h2>Modifier la licence</h2>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="edit-license-key">Clé de licence</label>
-                    <input type="text" id="edit-license-key" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="edit-license-email">Email associé</label>
-                    <input type="email" id="edit-license-email" placeholder="Laissez vide pour autoriser tout email">
-                </div>
-                <div class="form-group">
-                    <label for="edit-license-status">Statut</label>
-                    <select id="edit-license-status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="edit-license-activated">Activée</label>
-                    <input type="checkbox" id="edit-license-activated">
-                </div>
-                <div id="edit-license-device" class="form-group" style="display: none;">
-                    <label>Appareil associé</label>
-                    <input type="text" id="edit-license-device-id" readonly>
-                </div>
-                <button id="save-license" class="btn btn-success">Enregistrer les modifications</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de choix de langue pour les cours -->
-    <div id="language-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="close-language-modal">&times;</span>
-            <h2>Choisissez la langue des cours</h2>
-            <div class="modal-body">
-                <p>Sélectionnez la langue dans laquelle vous souhaitez télécharger les cours :</p>
-                
-                <div class="language-options">
-                    <div class="language-option" data-lang="fr">
-                        <i class="fas fa-flag"></i>
-                        <h4>Français</h4>
-                        <p>Cours en langue française</p>
+                <div style="margin: 2rem 0;">
+                    <div style="background: var(--light-blue); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
+                        <h4>Formation TikTok Masterclass</h4>
+                        <p>Apprenez à monétiser votre compte TikTok efficacement</p>
+                        <a href="#" class="btn btn-primary" style="margin-top: 0.5rem;">Télécharger</a>
                     </div>
-                    <div class="language-option" data-lang="ln">
-                        <i class="fas fa-globe-africa"></i>
-                        <h4>Lingala</h4>
-                        <p>Cours en langue lingala</p>
+                    
+                    <div style="background: var(--light-blue); padding: 1rem; border-radius: var(--radius); margin-bottom: 1rem;">
+                        <h4>Formation Marketing Digital</h4>
+                        <p>Stratégies avancées pour développer votre présence en ligne</p>
+                        <a href="#" class="btn btn-primary" style="margin-top: 0.5rem;">Télécharger</a>
                     </div>
-                </div>
-                
-                <div id="download-section" style="display: none; margin-top: 2rem; text-align: center;">
-                    <h3 id="selected-language-title">Télécharger les cours en <span id="language-name"></span></h3>
-                    <p id="course-description"></p>
-                    <div style="margin-top: 1.5rem;">
-                        <a id="download-link" href="#" class="btn btn-success" target="_blank">
-                            <i class="fas fa-download"></i> Télécharger maintenant
-                        </a>
+                    
+                    <div style="background: var(--light-blue); padding: 1rem; border-radius: var(--radius);">
+                        <h4>Formation Création de Contenu</h4>
+                        <p>Créez du contenu engageant qui convertit</p>
+                        <a href="#" class="btn btn-primary" style="margin-top: 0.5rem;">Télécharger</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Modal des vidéos de création de compte -->
-    <div id="tutorial-modal" class="modal">
-        <div class="modal-content modal-large">
-            <span class="close" id="close-tutorial-modal">&times;</span>
-            <h2>Comment créer un compte RE-BOOST</h2>
-            <div class="modal-body">
-                <p>Choisissez la langue de la vidéo tutorielle :</p>
-                
-                <div class="video-tabs">
-                    <button class="video-tab active" data-video="fr">Français</button>
-                    <button class="video-tab" data-video="ln">Lingala</button>
-                </div>
-                
-                <!-- Vidéo en Français -->
-                <div id="video-fr" class="video-container active">
-<iframe width="315" height="560" src="https://www.youtube.com/embed/pyVXyf2vQwU" title="créer votre compte Re-boost" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
-                <!-- Vidéo en Lingala -->
-                <div id="video-ln" class="video-container active">
-<iframe width="315" height="560" src="https://www.youtube.com/embed/DrOkG1a3pbk" title="comment créer un compte Re-boost" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>       
-                    </div>
 
     <script>
-        // Le reste du code JavaScript reste inchangé
-        // Gestion des onglets d'authentification
+        // Configuration administrateur
+        const ADMIN_PASSWORD = "admin123"; // Changez ce mot de passe
+        const ADMIN_EMAIL = "masamunatresor6@gmail.com"; // Votre email
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier si l'utilisateur est déjà connecté
-            checkLoginStatus();
+            // Vérifier si une licence est déjà activée
+            checkLicenseStatus();
             
-            // Gestion des onglets de connexion/inscription
+            // Gestion des onglets
             const tabBtns = document.querySelectorAll('.tab-btn');
             const authForms = document.querySelectorAll('.auth-form');
             
-            if (tabBtns.length > 0) {
-                tabBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const targetTab = this.getAttribute('data-tab');
-                        
-                        // Mettre à jour les boutons d'onglet
-                        tabBtns.forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Afficher le formulaire correspondant
-                        authForms.forEach(form => {
-                            form.classList.remove('active');
-                            if (form.id === `${targetTab}-form`) {
-                                form.classList.add('active');
-                            }
-                        });
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Mettre à jour les boutons d'onglet
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Afficher le formulaire correspondant
+                    authForms.forEach(form => {
+                        form.classList.remove('active');
+                        if (form.id === `${targetTab}-form`) {
+                            form.classList.add('active');
+                        }
                     });
-                });
-            }
-            
-            // Gestion du bouton "Comment créer un compte RE-BOOST"
-            const tutorialBtn = document.getElementById('tutorial-btn');
-            const tutorialModal = document.getElementById('tutorial-modal');
-            const closeTutorialModal = document.getElementById('close-tutorial-modal');
-            const videoTabs = document.querySelectorAll('.video-tab');
-            const videoContainers = document.querySelectorAll('.video-container');
-            
-            if (tutorialBtn && tutorialModal) {
-                tutorialBtn.addEventListener('click', function() {
-                    tutorialModal.style.display = 'flex';
-                });
-                
-                closeTutorialModal.addEventListener('click', function() {
-                    tutorialModal.style.display = 'none';
-                });
-                
-                // Fermer le modal en cliquant en dehors
-                window.addEventListener('click', function(e) {
-                    if (e.target === tutorialModal) {
-                        tutorialModal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Gestion des onglets de vidéo
-            if (videoTabs.length > 0) {
-                videoTabs.forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        const videoLang = this.getAttribute('data-video');
-                        
-                        // Mettre à jour les onglets
-                        videoTabs.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Afficher le conteneur vidéo correspondant
-                        videoContainers.forEach(container => {
-                            container.classList.remove('active');
-                            if (container.id === `video-${videoLang}`) {
-                                container.classList.add('active');
-                            }
-                        });
-                    });
-                });
-            }
-            
-            // Gestion du formulaire d'inscription
-            const registerForm = document.getElementById('register-form');
-            if (registerForm) {
-                registerForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const name = document.getElementById('register-name').value;
-                    const email = document.getElementById('register-email').value;
-                    const password = document.getElementById('register-password').value;
-                    const confirmPassword = document.getElementById('register-confirm').value;
-                    
-                    // Validation des champs
-                    if (!name || !email || !password || !confirmPassword) {
-                        showAlert('Veuillez remplir tous les champs.', 'error');
-                        return;
-                    }
-                    
-                    // Vérification de la correspondance des mots de passe
-                    if (password !== confirmPassword) {
-                        showAlert('Les mots de passe ne correspondent pas.', 'error');
-                        return;
-                    }
-                    
-                    // Vérification de la force du mot de passe
-                    if (password.length < 6) {
-                        showAlert('Le mot de passe doit contenir au moins 6 caractères.', 'error');
-                        return;
-                    }
-                    
-                    // Vérification du format d'email
-                    if (!isValidEmail(email)) {
-                        showAlert('Veuillez saisir une adresse email valide.', 'error');
-                        return;
-                    }
-                    
-                    // Génération d'empreinte du navigateur
-                    const deviceId = generateDeviceId();
-                    
-                    // Enregistrement de l'utilisateur (simulation avec localStorage)
-                    const users = JSON.parse(localStorage.getItem('reboost_users') || '[]');
-                    
-                    // Vérifier si l'email existe déjà
-                    if (users.find(user => user.email === email)) {
-                        showAlert('Cet email est déjà utilisé.', 'error');
-                        return;
-                    }
-                    
-                    // Ajouter le nouvel utilisateur
-                    const newUser = {
-                        id: Date.now().toString(),
-                        name: name,
-                        email: email,
-                        password: btoa(password), // Hachage simple
-                        deviceId: deviceId,
-                        registeredAt: new Date().toISOString(),
-                        hasLicense: false
-                    };
-                    
-                    users.push(newUser);
-                    localStorage.setItem('reboost_users', JSON.stringify(users));
-                    
-                    showAlert('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success');
-                    document.querySelector('.tab-btn[data-tab="login"]').click();
-                    
-                    // Réinitialiser le formulaire
-                    registerForm.reset();
-                });
-            }
-            
-            // Gestion du formulaire de connexion
-            const loginForm = document.getElementById('login-form');
-            if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById('login-email').value;
-                    const password = document.getElementById('login-password').value;
-                    
-                    // Validation des champs
-                    if (!email || !password) {
-                        showAlert('Veuillez remplir tous les champs.', 'error');
-                        return;
-                    }
-                    
-                    // Vérification des identifiants
-                    const users = JSON.parse(localStorage.getItem('reboost_users') || '[]');
-                    const user = users.find(u => u.email === email && u.password === btoa(password));
-                    
-                    if (user) {
-                        // Vérification de la licence
-                        if (!user.hasLicense) {
-                            showAlert('Vous devez activer une licence pour accéder à l\'application.', 'error');
-                            document.querySelector('.tab-btn[data-tab="license"]').click();
-                            return;
-                        }
-                        
-                        // Vérification de l'appareil
-                        const currentDeviceId = generateDeviceId();
-                        
-                        if (user.deviceId && user.deviceId !== currentDeviceId) {
-                            showAlert('Cette licence est déjà utilisée sur un autre appareil. Une licence est valable pour un seul PC.', 'error');
-                            return;
-                        }
-                        
-                        // Mettre à jour l'ID d'appareil si nécessaire
-                        if (!user.deviceId) {
-                            user.deviceId = currentDeviceId;
-                            localStorage.setItem('reboost_users', JSON.stringify(users));
-                        }
-                        
-                        // Connexion réussie
-                        const session = {
-                            userId: user.id,
-                            userName: user.name,
-                            userEmail: user.email,
-                            deviceId: currentDeviceId,
-                            loginTime: new Date().toISOString()
-                        };
-                        
-                        localStorage.setItem('reboost_session', JSON.stringify(session));
-                        
-                        // Redirection vers le tableau de bord
-                        showDashboard();
-                    } else {
-                        showAlert('Email ou mot de passe incorrect.', 'error');
-                    }
-                });
-            }
-            
-            // Gestion du formulaire d'activation de licence
-            const licenseForm = document.getElementById('license-form');
-            if (licenseForm) {
-                licenseForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const licenseKey = document.getElementById('license-key').value;
-                    const email = document.getElementById('license-email').value;
-                    
-                    // Validation des champs
-                    if (!licenseKey || !email) {
-                        showAlert('Veuillez remplir tous les champs.', 'error');
-                        return;
-                    }
-                    
-                    // Vérification du format d'email
-                    if (!isValidEmail(email)) {
-                        showAlert('Veuillez saisir une adresse email valide.', 'error');
-                        return;
-                    }
-                    
-                    // Vérifier si l'utilisateur existe
-                    const users = JSON.parse(localStorage.getItem('reboost_users') || '[]');
-                    const user = users.find(u => u.email === email);
-                    
-                    if (!user) {
-                        showAlert('Aucun compte trouvé avec cet email. Veuillez d\'abord vous inscrire.', 'error');
-                        document.querySelector('.tab-btn[data-tab="register"]').click();
-                        return;
-                    }
-                    
-                    // Vérifier si l'utilisateur a déjà une licence
-                    if (user.hasLicense) {
-                        showAlert('Vous avez déjà une licence active.', 'error');
-                        document.querySelector('.tab-btn[data-tab="login"]').click();
-                        return;
-                    }
-                    
-                    // Vérifier la licence (simulation)
-                    const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
-                    const license = licenses.find(l => l.key === licenseKey && l.status === 'active' && !l.activated);
-                    
-                    if (license) {
-                        // Vérifier si la licence est restreinte à un email spécifique
-                        if (license.email && license.email !== email) {
-                            showAlert('Cette licence n\'est pas associée à cet email.', 'error');
-                            return;
-                        }
-                        
-                        // Activer la licence
-                        license.activated = true;
-                        license.activatedAt = new Date().toISOString();
-                        license.deviceId = generateDeviceId();
-                        license.activatedBy = email;
-                        
-                        // Mettre à jour l'utilisateur
-                        user.hasLicense = true;
-                        user.licenseKey = licenseKey;
-                        user.deviceId = license.deviceId;
-                        
-                        localStorage.setItem('reboost_licenses', JSON.stringify(licenses));
-                        localStorage.setItem('reboost_users', JSON.stringify(users));
-                        
-                        showAlert('Licence activée avec succès ! Vous pouvez maintenant vous connecter.', 'success');
-                        document.querySelector('.tab-btn[data-tab="login"]').click();
-                    } else {
-                        showAlert('Clé de licence invalide, inactive ou déjà utilisée. Contactez-nous sur WhatsApp.', 'error');
-                    }
-                });
-            }
-            
-            // Gestion du bouton de déconnexion
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function() {
-                    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-                        localStorage.removeItem('reboost_session');
-                        showHomePage();
-                    }
-                });
-            }
-            
-            // Gestion du bouton VIDÉO - Ouvre le modal de choix de langue
-            const videoBtn = document.getElementById('video-btn');
-            const languageModal = document.getElementById('language-modal');
-            const closeLanguageModal = document.getElementById('close-language-modal');
-            
-            if (videoBtn && languageModal) {
-                videoBtn.addEventListener('click', function() {
-                    languageModal.style.display = 'flex';
-                    // Réinitialiser la sélection
-                    document.querySelectorAll('.language-option').forEach(option => {
-                        option.classList.remove('selected');
-                    });
-                    document.getElementById('download-section').style.display = 'none';
-                });
-                
-                closeLanguageModal.addEventListener('click', function() {
-                    languageModal.style.display = 'none';
-                });
-                
-                // Fermer le modal en cliquant en dehors
-                window.addEventListener('click', function(e) {
-                    if (e.target === languageModal) {
-                        languageModal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Gestion des options de langue
-            const languageOptions = document.querySelectorAll('.language-option');
-            const downloadSection = document.getElementById('download-section');
-            const languageName = document.getElementById('language-name');
-            const courseDescription = document.getElementById('course-description');
-            const downloadLink = document.getElementById('download-link');
-            
-            // Définir les liens de téléchargement pour chaque langue
-            const downloadLinks = {
-                'fr': 'https://example.com/cours-francais.zip', // Remplacez par votre lien réel
-                'ln': 'https://example.com/cours-lingala.zip'  // Remplacez par votre lien réel
-            };
-            
-            const courseDescriptions = {
-                'fr': 'Formation complète en français sur le marketing digital et la monétisation sur TikTok. Contient des vidéos, documents PDF et ressources exclusives.',
-                'ln': 'Formation complète en lingala sur le marketing digital na monétisation na TikTok. Ezali na bavideo, mikanda PDF na baressources exclusives.'
-            };
-            
-            const languageNames = {
-                'fr': 'Français',
-                'ln': 'Lingala'
-            };
-            
-            languageOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    const lang = this.getAttribute('data-lang');
-                    
-                    // Mettre à jour la sélection visuelle
-                    languageOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    
-                    // Afficher la section de téléchargement
-                    downloadSection.style.display = 'block';
-                    
-                    // Mettre à jour les informations
-                    languageName.textContent = languageNames[lang];
-                    courseDescription.textContent = courseDescriptions[lang];
-                    downloadLink.href = downloadLinks[lang];
                 });
             });
             
-            // Gestion du bouton BOOSTER
-            const boosterBtn = document.getElementById('booster-btn');
-            if (boosterBtn) {
-                boosterBtn.addEventListener('click', function() {
-                    // Ouvrir le lien de boost dans un nouvel onglet
-                    window.open('https://re-boost.free.nf', '_blank');
-                });
-            }
-            
-            // Gestion du modal des mentions légales
-            const mentionsLinks = document.querySelectorAll('#mentions-legales, #mentions-legales-dashboard');
-            const mentionsModal = document.getElementById('mentions-modal');
-            const closeModal = document.querySelector('.close');
-            
-            if (mentionsLinks.length > 0 && mentionsModal) {
-                mentionsLinks.forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        mentionsModal.style.display = 'flex';
-                    });
-                });
+            // Gestion de l'activation de licence
+            const licenseForm = document.getElementById('license-form');
+            licenseForm.addEventListener('submit', function(e) {
+                e.preventDefault();
                 
-                closeModal.addEventListener('click', function() {
-                    mentionsModal.style.display = 'none';
-                });
+                const licenseKey = document.getElementById('license-key').value;
+                const userEmail = document.getElementById('user-email').value;
+                const userName = document.getElementById('user-name').value;
                 
-                // Fermer le modal en cliquant en dehors
-                window.addEventListener('click', function(e) {
-                    if (e.target === mentionsModal) {
-                        mentionsModal.style.display = 'none';
+                if (!licenseKey || !userEmail || !userName) {
+                    showAlert('Veuillez remplir tous les champs.', 'error');
+                    return;
+                }
+                
+                if (!isValidEmail(userEmail)) {
+                    showAlert('Veuillez saisir une adresse email valide.', 'error');
+                    return;
+                }
+                
+                // Vérifier la licence
+                const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
+                const license = licenses.find(l => l.key === licenseKey && l.status === 'active');
+                
+                if (license) {
+                    // Vérifier si la licence est déjà utilisée
+                    if (license.activated) {
+                        showAlert('Cette licence a déjà été activée.', 'error');
+                        return;
                     }
-                });
-            }
+                    
+                    // Vérifier si la licence est restreinte à un email spécifique
+                    if (license.clientEmail && license.clientEmail !== userEmail) {
+                        showAlert('Cette licence n\'est pas associée à cet email.', 'error');
+                        return;
+                    }
+                    
+                    // Activer la licence
+                    license.activated = true;
+                    license.activatedAt = new Date().toISOString();
+                    license.activatedBy = userEmail;
+                    license.userName = userName;
+                    
+                    // Enregistrer la session utilisateur
+                    const userSession = {
+                        userName: userName,
+                        userEmail: userEmail,
+                        licenseKey: licenseKey,
+                        licenseType: license.type,
+                        licenseExpiry: license.expiry,
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('reboost_licenses', JSON.stringify(licenses));
+                    localStorage.setItem('reboost_session', JSON.stringify(userSession));
+                    
+                    showAlert('Licence activée avec succès ! Redirection...', 'success');
+                    
+                    // Rediriger vers le tableau de bord après 2 secondes
+                    setTimeout(() => {
+                        showDashboard();
+                    }, 2000);
+                    
+                } else {
+                    showAlert('Clé de licence invalide ou inactive. Contactez l\'administrateur.', 'error');
+                }
+            });
             
             // Gestion de l'administration
             const adminLoginBtn = document.getElementById('admin-login');
             const adminPanel = document.getElementById('admin-panel');
-            const addLicenseBtn = document.getElementById('add-license');
+            const generateLicenseBtn = document.getElementById('generate-license');
             const licensesList = document.getElementById('licenses-list');
-            const editLicenseModal = document.getElementById('edit-license-modal');
-            const closeEditModal = document.getElementById('close-edit-modal');
-            const saveLicenseBtn = document.getElementById('save-license');
             
-            // Mot de passe administrateur (à changer en production)
-            const ADMIN_PASSWORD = "madrassa1234";
-            
-            if (adminLoginBtn) {
-                adminLoginBtn.addEventListener('click', function() {
-                    const password = document.getElementById('admin-password').value;
-                    
-                    if (password === ADMIN_PASSWORD) {
-                        adminPanel.style.display = 'block';
-                        loadLicensesList();
-                    } else {
-                        showAlert('Mot de passe administrateur incorrect.', 'error');
-                    }
-                });
-            }
-            
-            if (addLicenseBtn) {
-                addLicenseBtn.addEventListener('click', function() {
-                    const key = document.getElementById('new-license-key').value;
-                    const email = document.getElementById('new-license-email').value;
-                    const status = document.getElementById('license-status').value;
-                    
-                    if (!key) {
-                        showAlert('Veuillez saisir une clé de licence.', 'error');
-                        return;
-                    }
-                    
-                    // Vérifier si la clé existe déjà
-                    const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
-                    if (licenses.find(l => l.key === key)) {
-                        showAlert('Cette clé de licence existe déjà.', 'error');
-                        return;
-                    }
-                    
-                    // Ajouter la nouvelle licence
-                    const newLicense = {
-                        key: key,
-                        email: email || null,
-                        status: status,
-                        activated: false,
-                        createdAt: new Date().toISOString()
-                    };
-                    
-                    licenses.push(newLicense);
-                    localStorage.setItem('reboost_licenses', JSON.stringify(licenses));
-                    
-                    showAlert('Licence ajoutée avec succès!', 'success');
+            adminLoginBtn.addEventListener('click', function() {
+                const password = document.getElementById('admin-password').value;
+                
+                if (password === ADMIN_PASSWORD) {
+                    adminPanel.style.display = 'block';
                     loadLicensesList();
-                    
-                    // Réinitialiser le formulaire
-                    document.getElementById('new-license-key').value = '';
-                    document.getElementById('new-license-email').value = '';
-                });
-            }
+                } else {
+                    showAlert('Mot de passe administrateur incorrect.', 'error');
+                }
+            });
             
-            if (closeEditModal) {
-                closeEditModal.addEventListener('click', function() {
-                    editLicenseModal.style.display = 'none';
-                });
-            }
-            
-            if (saveLicenseBtn) {
-                saveLicenseBtn.addEventListener('click', function() {
-                    const key = document.getElementById('edit-license-key').value;
-                    const email = document.getElementById('edit-license-email').value;
-                    const status = document.getElementById('edit-license-status').value;
-                    const activated = document.getElementById('edit-license-activated').checked;
-                    
-                    // Mettre à jour la licence
-                    const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
-                    const licenseIndex = licenses.findIndex(l => l.key === key);
-                    
-                    if (licenseIndex !== -1) {
-                        licenses[licenseIndex].email = email || null;
-                        licenses[licenseIndex].status = status;
-                        licenses[licenseIndex].activated = activated;
-                        
-                        // Si on désactive une licence, on supprime l'appareil associé
-                        if (!activated) {
-                            licenses[licenseIndex].deviceId = null;
-                            licenses[licenseIndex].activatedAt = null;
-                            licenses[licenseIndex].activatedBy = null;
-                            
-                            // Mettre à jour l'utilisateur correspondant
-                            const users = JSON.parse(localStorage.getItem('reboost_users') || '[]');
-                            const userIndex = users.findIndex(u => u.licenseKey === key);
-                            if (userIndex !== -1) {
-                                users[userIndex].hasLicense = false;
-                                users[userIndex].licenseKey = null;
-                                users[userIndex].deviceId = null;
-                                localStorage.setItem('reboost_users', JSON.stringify(users));
-                            }
-                        }
-                        
-                        localStorage.setItem('reboost_licenses', JSON.stringify(licenses));
-                        showAlert('Licence mise à jour avec succès!', 'success');
-                        editLicenseModal.style.display = 'none';
-                        loadLicensesList();
-                    }
-                });
-            }
-            
-            // Initialiser les licences de démonstration
-            initializeDemoLicenses();
-            
-            // Fonction pour charger la liste des licences
-            function loadLicensesList() {
+            generateLicenseBtn.addEventListener('click', function() {
+                const clientEmail = document.getElementById('client-email').value;
+                const clientName = document.getElementById('client-name').value;
+                const licenseType = document.getElementById('license-type').value;
+                
+                // Générer une clé de licence unique
+                const licenseKey = generateLicenseKey();
+                
+                // Déterminer la durée selon le type
+                let durationMonths = 1;
+                let licenseTypeName = "Standard";
+                
+                switch(licenseType) {
+                    case 'premium':
+                        durationMonths = 3;
+                        licenseTypeName = "Premium";
+                        break;
+                    case 'vip':
+                        durationMonths = 12;
+                        licenseTypeName = "VIP";
+                        break;
+                }
+                
+                // Calculer la date d'expiration
+                const expiryDate = new Date();
+                expiryDate.setMonth(expiryDate.getMonth() + durationMonths);
+                const expiryText = expiryDate.toLocaleDateString('fr-FR');
+                
+                // Créer la licence
+                const newLicense = {
+                    key: licenseKey,
+                    clientEmail: clientEmail || null,
+                    clientName: clientName || null,
+                    type: licenseType,
+                    typeName: licenseTypeName,
+                    duration: durationMonths,
+                    expiry: expiryText,
+                    status: 'active',
+                    activated: false,
+                    createdAt: new Date().toISOString(),
+                    createdBy: ADMIN_EMAIL
+                };
+                
+                // Sauvegarder la licence
                 const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
-                licensesList.innerHTML = '';
+                licenses.push(newLicense);
+                localStorage.setItem('reboost_licenses', JSON.stringify(licenses));
                 
-                if (licenses.length === 0) {
-                    licensesList.innerHTML = '<p>Aucune licence trouvée.</p>';
-                    return;
-                }
+                // Afficher le résultat
+                document.getElementById('generated-license-key').textContent = licenseKey;
+                document.getElementById('generated-license-type').textContent = licenseTypeName;
+                document.getElementById('generated-license-expiry').textContent = expiryText;
+                document.getElementById('new-license-result').style.display = 'block';
                 
-                const table = document.createElement('table');
-                table.className = 'licenses-table';
+                // Mettre à jour la liste
+                loadLicensesList();
                 
-                // En-têtes du tableau
-                const thead = document.createElement('thead');
-                thead.innerHTML = `
-                    <tr>
-                        <th>Clé</th>
-                        <th>Email</th>
-                        <th>Statut</th>
-                        <th>Activée</th>
-                        <th>Appareil</th>
-                        <th>Actions</th>
-                    </tr>
-                `;
-                table.appendChild(thead);
-                
-                // Corps du tableau
-                const tbody = document.createElement('tbody');
-                
-                licenses.forEach(license => {
-                    const tr = document.createElement('tr');
-                    
-                    // Déterminer le statut
-                    let statusClass = 'status-inactive';
-                    let statusText = 'Inactive';
-                    
-                    if (license.status === 'active') {
-                        statusClass = license.activated ? 'status-used' : 'status-active';
-                        statusText = license.activated ? 'Utilisée' : 'Active';
-                    }
-                    
-                    // Affichage de l'email
-                    const emailDisplay = license.email || 'Aucun (libre)';
-                    
-                    // Affichage de l'appareil
-                    const deviceDisplay = license.deviceId ? 
-                        license.deviceId.substring(0, 8) + '...' : 'Aucun';
-                    
-                    tr.innerHTML = `
-                        <td>${license.key}</td>
-                        <td>${emailDisplay}</td>
-                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                        <td>${license.activated ? 'Oui' : 'Non'}</td>
-                        <td>${deviceDisplay}</td>
-                        <td class="action-buttons">
-                            <button class="btn btn-warning btn-small edit-license" data-key="${license.key}">Modifier</button>
-                            <button class="btn btn-error btn-small delete-license" data-key="${license.key}">Supprimer</button>
-                        </td>
-                    `;
-                    
-                    tbody.appendChild(tr);
-                });
-                
-                table.appendChild(tbody);
-                licensesList.appendChild(table);
-                
-                // Ajouter les événements pour les boutons
-                document.querySelectorAll('.edit-license').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const key = this.getAttribute('data-key');
-                        editLicense(key);
-                    });
-                });
-                
-                document.querySelectorAll('.delete-license').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const key = this.getAttribute('data-key');
-                        deleteLicense(key);
-                    });
-                });
-            }
+                // Réinitialiser le formulaire
+                document.getElementById('client-email').value = '';
+                document.getElementById('client-name').value = '';
+            });
             
-            // Fonction pour éditer une licence
-            function editLicense(key) {
-                const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
-                const license = licenses.find(l => l.key === key);
-                
-                if (license) {
-                    document.getElementById('edit-license-key').value = license.key;
-                    document.getElementById('edit-license-email').value = license.email || '';
-                    document.getElementById('edit-license-status').value = license.status;
-                    document.getElementById('edit-license-activated').checked = license.activated;
-                    
-                    // Afficher l'appareil si la licence est activée
-                    const deviceField = document.getElementById('edit-license-device');
-                    const deviceIdField = document.getElementById('edit-license-device-id');
-                    
-                    if (license.activated && license.deviceId) {
-                        deviceField.style.display = 'block';
-                        deviceIdField.value = license.deviceId;
-                    } else {
-                        deviceField.style.display = 'none';
-                    }
-                    
-                    editLicenseModal.style.display = 'flex';
-                }
-            }
+            // Copier la clé de licence
+            document.getElementById('copy-license').addEventListener('click', function() {
+                const licenseKey = document.getElementById('generated-license-key').textContent;
+                navigator.clipboard.writeText(licenseKey).then(() => {
+                    showAlert('Clé copiée dans le presse-papier !', 'success');
+                });
+            });
             
-            // Fonction pour supprimer une licence
-            function deleteLicense(key) {
-                if (confirm('Êtes-vous sûr de vouloir supprimer cette licence ? Cette action est irréversible.')) {
-                    const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
-                    const updatedLicenses = licenses.filter(l => l.key !== key);
-                    
-                    localStorage.setItem('reboost_licenses', JSON.stringify(updatedLicenses));
-                    showAlert('Licence supprimée avec succès!', 'success');
-                    loadLicensesList();
+            // Gestion du bouton de déconnexion
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                    localStorage.removeItem('reboost_session');
+                    showHomePage();
                 }
-            }
+            });
             
-            // Fonction pour vérifier le statut de connexion
-            function checkLoginStatus() {
+            // Gestion du bouton des formations
+            document.getElementById('training-btn').addEventListener('click', function() {
+                document.getElementById('training-modal').style.display = 'flex';
+            });
+            
+            // Fermer les modals
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    this.closest('.modal').style.display = 'none';
+                });
+            });
+            
+            // Fermer les modals en cliquant à l'extérieur
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+            
+            // Fonction pour vérifier le statut de la licence
+            function checkLicenseStatus() {
                 const session = JSON.parse(localStorage.getItem('reboost_session') || 'null');
                 
                 if (session) {
-                    // Vérifier l'appareil
-                    const currentDeviceId = generateDeviceId();
-                    
-                    if (session.deviceId === currentDeviceId) {
-                        showDashboard();
-                        document.getElementById('user-name').textContent = session.userName;
-                        
-                        // Afficher les informations de licence
-                        const users = JSON.parse(localStorage.getItem('reboost_users') || '[]');
-                        const user = users.find(u => u.id === session.userId);
-                        if (user && user.hasLicense) {
-                            document.getElementById('license-key-display').textContent = user.licenseKey;
-                            document.getElementById('device-id').textContent = user.deviceId.substring(0, 12) + '...';
-                        }
-                    } else {
-                        // Appareil différent, déconnexion forcée
-                        localStorage.removeItem('reboost_session');
-                        showAlert('Session expirée. Veuillez vous reconnecter.', 'error');
-                    }
+                    showDashboard();
+                    document.getElementById('user-name').textContent = session.userName;
+                    document.getElementById('license-key-display').textContent = session.licenseKey;
+                    document.getElementById('license-type-display').textContent = session.licenseType || 'Standard';
+                    document.getElementById('license-expiry').textContent = session.licenseExpiry || 'Illimitée';
                 }
             }
             
@@ -2072,35 +1038,67 @@
             function showDashboard() {
                 document.getElementById('home-page').classList.remove('active');
                 document.getElementById('dashboard-page').classList.add('active');
-                
-                const session = JSON.parse(localStorage.getItem('reboost_session') || '{}');
-                document.getElementById('user-name').textContent = session.userName || 'Utilisateur';
             }
             
-            // Fonction pour générer un ID d'appareil unique
-            function generateDeviceId() {
-                const components = [
-                    navigator.userAgent,
-                    navigator.language,
-                    navigator.hardwareConcurrency || 'unknown',
-                    screen.width + 'x' + screen.height,
-                    new Date().getTimezoneOffset(),
-                    navigator.platform
-                ];
+            // Fonction pour charger la liste des licences
+            function loadLicensesList() {
+                const licenses = JSON.parse(localStorage.getItem('reboost_licenses') || '[]');
+                licensesList.innerHTML = '';
                 
-                // Hash simple mais efficace
-                let deviceId = '';
-                for (let component of components) {
-                    let hash = 0;
-                    for (let i = 0; i < component.length; i++) {
-                        const char = component.charCodeAt(i);
-                        hash = ((hash << 5) - hash) + char;
-                        hash = hash & hash; // Convertir en 32-bit integer
-                    }
-                    deviceId += Math.abs(hash).toString(16);
+                if (licenses.length === 0) {
+                    licensesList.innerHTML = '<p>Aucune licence générée.</p>';
+                    return;
                 }
                 
-                return deviceId;
+                const table = document.createElement('table');
+                table.style.width = '100%';
+                table.style.borderCollapse = 'collapse';
+                table.style.marginTop = '1rem';
+                
+                // En-têtes du tableau
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr style="background-color: var(--light-blue);">
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Clé</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Client</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Type</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Statut</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb;">Expiration</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+                
+                // Corps du tableau
+                const tbody = document.createElement('tbody');
+                
+                licenses.forEach(license => {
+                    const tr = document.createElement('tr');
+                    tr.style.borderBottom = '1px solid #e5e7eb';
+                    
+                    const statusText = license.activated ? 'Activée' : 'Inactive';
+                    const statusColor = license.activated ? 'green' : 'orange';
+                    
+                    tr.innerHTML = `
+                        <td style="padding: 0.75rem;">${license.key}</td>
+                        <td style="padding: 0.75rem;">${license.clientName || 'Non attribué'}</td>
+                        <td style="padding: 0.75rem;">${license.typeName}</td>
+                        <td style="padding: 0.75rem; color: ${statusColor};">${statusText}</td>
+                        <td style="padding: 0.75rem;">${license.expiry}</td>
+                    `;
+                    
+                    tbody.appendChild(tr);
+                });
+                
+                table.appendChild(tbody);
+                licensesList.appendChild(table);
+            }
+            
+            // Fonction pour générer une clé de licence
+            function generateLicenseKey() {
+                const prefix = 'REBOOST';
+                const timestamp = Date.now().toString(36).toUpperCase();
+                const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+                return `${prefix}-${timestamp}-${random}`;
             }
             
             // Fonction pour valider un email
@@ -2135,14 +1133,27 @@
                 if (licenses.length === 0) {
                     // Créer quelques licences de démonstration
                     const demoLicenses = [
-                        { key: 'REBOOST-2025-ABCD-1234', email: 'demo@re-boost.com', status: 'active', activated: false, createdAt: new Date().toISOString() },
-                        { key: 'REBOOST-2025-EFGH-5678', email: null, status: 'active', activated: false, createdAt: new Date().toISOString() },
-                        { key: 'REBOOST-2025-IJKL-9012', email: 'admin@re-boost.com', status: 'inactive', activated: false, createdAt: new Date().toISOString() }
+                        {
+                            key: 'REBOOST-DEMO-12345',
+                            clientEmail: 'demo@re-boost.com',
+                            clientName: 'Client Démo',
+                            type: 'standard',
+                            typeName: 'Standard',
+                            duration: 1,
+                            expiry: '31/12/2025',
+                            status: 'active',
+                            activated: false,
+                            createdAt: new Date().toISOString(),
+                            createdBy: ADMIN_EMAIL
+                        }
                     ];
                     
                     localStorage.setItem('reboost_licenses', JSON.stringify(demoLicenses));
                 }
             }
+            
+            // Initialiser les licences de démonstration
+            initializeDemoLicenses();
         });
     </script>
 </body>

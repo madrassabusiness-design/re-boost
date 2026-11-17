@@ -11,7 +11,7 @@
 #    FIREBASE_SERVICE_ACCOUNT  contenu complet de api/private/service-account.json
 #  Facultatifs :
 #    LWS_FTP_DIR        dossier du site sur le FTP (par défaut : htdocs/)
-#    LWS_FTP_PROTOCOL   ftp (par défaut) ou ftps
+#    LWS_FTP_PROTOCOL   ftps (par défaut, chiffré) ou ftp
 # =============================================================
 name: Site public → LWS
 
@@ -80,6 +80,9 @@ jobs:
           server: ${{ secrets.LWS_FTP_SERVER }}
           username: ${{ secrets.LWS_FTP_USERNAME }}
           password: ${{ secrets.LWS_FTP_PASSWORD }}
-          protocol: ${{ secrets.LWS_FTP_PROTOCOL || 'ftp' }}
+          # FTPS : connexion chiffrée. « loose » car le certificat LWS est au nom
+          # de *.lwspanel.com et non du serveur ftp.<domaine>.
+          protocol: ${{ secrets.LWS_FTP_PROTOCOL || 'ftps' }}
+          security: loose
           local-dir: ./dist/site/
           server-dir: ${{ secrets.LWS_FTP_DIR || 'htdocs/' }}

@@ -52,6 +52,15 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa.json
         run: node deploy/publier-regles.mjs
 
+      # Numéro de version : déclenche le bouton « Mettre à jour » dans l'application admin
+      - name: Inscrire le numéro de version
+        run: |
+          VERSION="${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}"
+          printf '{"version":"%s","date":"%s"}\n' "$VERSION" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > admin/version.json
+          sed -i "s|<meta name=\"app-version\" content=\"dev\">|<meta name=\"app-version\" content=\"$VERSION\">|" admin/index.html
+          grep -q "content=\"$VERSION\"" admin/index.html || { echo "::error::Numéro de version non inscrit dans admin/index.html"; exit 1; }
+          echo "Version : $VERSION"
+
       - name: Publier l'application admin (Firebase Hosting)
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa.json

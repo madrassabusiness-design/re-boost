@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#04070f">
+    <!-- Version en ligne : remplacée automatiquement à chaque déploiement (GitHub Actions) -->
+    <meta name="app-version" content="dev">
     <title>RE-BOOST Admin</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="manifest" href="manifest.webmanifest">
@@ -257,6 +259,29 @@
         .toast.error i { color: var(--error); }
         .toast.out { opacity: 0; transform: translateY(10px); transition: all .35s; }
 
+        /* Bandeau « Nouvelle version disponible » */
+        .update-banner {
+            position: fixed; left: 50%; bottom: 1.2rem; z-index: 200;
+            display: flex; align-items: center; gap: .9rem;
+            width: min(540px, calc(100vw - 2rem));
+            padding: .8rem .9rem .8rem 1rem;
+            border-radius: 16px;
+            background: rgba(10, 18, 36, .97);
+            border: 1px solid rgba(62, 230, 168, .45);
+            box-shadow: 0 24px 60px -12px rgba(0,0,0,.8), 0 0 40px -10px rgba(62,230,168,.4);
+            transform: translate(-50%, 140%); opacity: 0;
+            transition: transform .6s var(--ease), opacity .4s;
+        }
+        .update-banner.show { transform: translate(-50%, 0); opacity: 1; }
+        .update-banner .ub-icon { flex: 0 0 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; color: #06281c; background: linear-gradient(135deg, #3ee6a8, #17a874); }
+        .update-banner .ub-icon i { animation: spin 2.4s linear infinite; }
+        .update-banner .ub-text { display: grid; flex: 1; min-width: 0; }
+        .update-banner .ub-text strong { font-family: var(--font-display); font-size: .95rem; }
+        .update-banner .ub-text span { font-size: .78rem; color: var(--muted); }
+        .update-banner .btn-update { color: #06281c; background: linear-gradient(135deg, #3ee6a8, #17a874); }
+        .update-banner .ub-later { width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; color: var(--muted); font-size: 1.3rem; cursor: pointer; }
+        .update-banner .ub-later:hover { color: var(--text); background: rgba(255,255,255,.06); }
+
         @media (max-width: 1100px) {
             .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .grid-2, .new-grid { grid-template-columns: 1fr; }
@@ -431,6 +456,17 @@
 
     <div class="toasts" id="toasts" aria-live="polite"></div>
 
+    <!-- Nouvelle version disponible -->
+    <div id="update-banner" class="update-banner" role="status" aria-live="polite" hidden>
+        <span class="ub-icon"><i class="fas fa-arrows-rotate"></i></span>
+        <div class="ub-text">
+            <strong>Nouvelle version disponible</strong>
+            <span>Mettez à jour l'application d'administration.</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-update" id="update-btn"><i class="fas fa-download"></i> Mettre à jour</button>
+        <button type="button" class="ub-later" id="update-later" aria-label="Plus tard" title="Plus tard">&times;</button>
+    </div>
+
     <script>
         // Installation de l'application (bouton « Installer l'application »)
         (function () {
@@ -451,6 +487,51 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
             }
+        })();
+
+        // Bouton « Mettre à jour » quand une nouvelle version est en ligne
+        (function () {
+            if (!location.protocol.startsWith('http')) return;
+            const banner = document.getElementById('update-banner');
+            const btn = document.getElementById('update-btn');
+            let current = document.querySelector('meta[name="app-version"]')?.content;
+            if (!current || current === 'dev') current = null;
+            let dismissed = null;
+
+            async function check() {
+                let online = null;
+                try {
+                    const res = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+                    if (res.ok) online = (await res.json()).version || null;
+                } catch (e) { /* hors ligne */ }
+                if (!online) return;
+                if (!current) { current = online; return; }
+                if (online !== current && online !== dismissed && banner.hidden) {
+                    banner.dataset.version = online;
+                    banner.hidden = false;
+                    requestAnimationFrame(() => requestAnimationFrame(() => banner.classList.add('show')));
+                }
+            }
+
+            btn.addEventListener('click', async () => {
+                btn.disabled = true;
+                btn.classList.add('is-loading');
+                try {
+                    const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+                    if (reg) await reg.update();
+                } catch (e) { /* le rechargement suffit */ }
+                location.reload();
+            });
+            document.getElementById('update-later').addEventListener('click', () => {
+                dismissed = banner.dataset.version;
+                banner.classList.remove('show');
+                setTimeout(() => { banner.hidden = true; }, 500);
+            });
+
+            check();
+            setInterval(check, 2 * 60 * 1000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+            window.addEventListener('online', check);
         })();
     </script>
     <script type="module" src="admin.js"></script>

@@ -6,6 +6,8 @@
     <title>RE-BOOST - Votre partenaire de développement</title>
     <meta name="description" content="RE-BOOST, votre partenaire dédié à la croissance de votre influence digitale : formations exclusives et boost de vos réseaux sociaux.">
     <meta name="theme-color" content="#04070f">
+    <!-- Version en ligne : remplacée automatiquement à chaque déploiement (GitHub Actions) -->
+    <meta name="app-version" content="dev">
     <script>document.documentElement.classList.add('js');</script>
     <!-- Application installable (PWA) -->
     <link rel="manifest" href="manifest.webmanifest">
@@ -1360,6 +1362,46 @@
             .header-actions .user-chip { display: none; }
         }
 
+        /* Bandeau « Nouvelle version disponible » */
+        .update-banner {
+            position: fixed;
+            left: 50%;
+            bottom: 1.2rem;
+            z-index: 2600;
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            width: min(560px, calc(100vw - 2rem));
+            padding: .85rem .9rem .85rem 1rem;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(14, 26, 52, .96), rgba(8, 14, 30, .96));
+            border: 1px solid rgba(62, 230, 168, .45);
+            box-shadow: 0 24px 60px -12px rgba(0,0,0,.8), 0 0 40px -10px rgba(62,230,168,.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transform: translate(-50%, 140%);
+            opacity: 0;
+            transition: transform .6s var(--ease-out), opacity .4s;
+        }
+        .update-banner.show { transform: translate(-50%, 0); opacity: 1; }
+        .update-banner[hidden] { display: none; }
+        .ub-icon {
+            flex: 0 0 42px; height: 42px; border-radius: 12px;
+            display: grid; place-items: center;
+            color: #06281c; background: linear-gradient(135deg, #3ee6a8, #17a874);
+        }
+        .ub-icon i { animation: spinRing 2.4s linear infinite; }
+        .ub-text { display: grid; flex: 1; min-width: 0; }
+        .ub-text strong { font-family: var(--font-display); font-size: .98rem; }
+        .ub-text span { font-size: .8rem; color: var(--muted); }
+        .ub-later { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px; border: 0; background: transparent; color: var(--muted); font-size: 1.3rem; cursor: pointer; }
+        .ub-later:hover { color: var(--text); background: rgba(255,255,255,.06); }
+        @media (max-width: 520px) {
+            .update-banner { flex-wrap: wrap; bottom: .8rem; }
+            .ub-text { flex-basis: calc(100% - 100px); }
+            .update-banner #update-btn { flex: 1; }
+        }
+
         /* Installation de l'application */
         .install-btn[hidden] { display: none !important; }
         .install-btn i { animation: installNudge 2.6s ease-in-out infinite; }
@@ -1888,6 +1930,17 @@
 
     <!-- Notifications -->
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <!-- Nouvelle version disponible -->
+    <div id="update-banner" class="update-banner" role="status" aria-live="polite" hidden>
+        <span class="ub-icon"><i class="fas fa-arrows-rotate"></i></span>
+        <div class="ub-text">
+            <strong>Nouvelle version disponible</strong>
+            <span>Mettez à jour pour profiter des dernières améliorations.</span>
+        </div>
+        <button type="button" class="btn btn-success btn-small" id="update-btn"><i class="fas fa-download"></i> Mettre à jour</button>
+        <button type="button" class="ub-later" id="update-later" aria-label="Plus tard" title="Plus tard">&times;</button>
+    </div>
 
     <!-- ===================== CONNEXION / INSCRIPTION ===================== -->
     <div id="auth-page" class="page active">
@@ -2861,6 +2914,61 @@
                 navigator.serviceWorker.register('sw.js').catch(err => console.warn('[RE-BOOST] Service worker :', err));
             });
         }
+
+        // --- Mise à jour : bouton « Mettre à jour » quand une nouvelle version est en ligne ---
+        // Chaque déploiement publie version.json et inscrit la même version dans
+        // <meta name="app-version">. Si la version en ligne change, on propose le bouton.
+        (function initUpdateCheck() {
+            if (!location.protocol.startsWith('http')) return;
+            const banner = document.getElementById('update-banner');
+            const updateBtn = document.getElementById('update-btn');
+            let current = document.querySelector('meta[name="app-version"]')?.content;
+            if (!current || current === 'dev') current = null; // développement : la 1re version lue sert de référence
+            let dismissed = null;
+
+            async function onlineVersion() {
+                try {
+                    const res = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+                    if (!res.ok) return null;
+                    return (await res.json()).version || null;
+                } catch (e) { return null; }
+            }
+
+            async function check() {
+                const online = await onlineVersion();
+                if (!online) return;
+                if (!current) { current = online; return; }
+                if (online !== current && online !== dismissed && banner.hidden) {
+                    banner.dataset.version = online;
+                    banner.hidden = false;
+                    requestAnimationFrame(() => requestAnimationFrame(() => banner.classList.add('show')));
+                }
+            }
+
+            function hideBanner() {
+                banner.classList.remove('show');
+                setTimeout(() => { banner.hidden = true; }, 500);
+            }
+
+            updateBtn.addEventListener('click', async () => {
+                updateBtn.disabled = true;
+                updateBtn.classList.add('is-loading');
+                try {
+                    const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
+                    if (reg) await reg.update();
+                } catch (e) { /* le rechargement suffit */ }
+                location.reload();
+            });
+            document.getElementById('update-later').addEventListener('click', () => {
+                dismissed = banner.dataset.version; // reproposé seulement pour une version plus récente
+                hideBanner();
+            });
+
+            check();
+            setInterval(check, 2 * 60 * 1000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+            window.addEventListener('online', check);
+        })();
 
         // --- Sécurité : si le module Firebase n'a pas pu se charger ---
         function warnIfAppNotReady() {

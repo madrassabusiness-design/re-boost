@@ -63,6 +63,13 @@ jobs:
             fi
           done < deploy/fichiers-lws.txt
 
+          # Numéro de version : déclenche le bouton « Mettre à jour » dans l'application
+          VERSION="${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}"
+          printf '{"version":"%s","date":"%s"}\n' "$VERSION" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/site/version.json
+          sed -i "s|<meta name=\"app-version\" content=\"dev\">|<meta name=\"app-version\" content=\"$VERSION\">|" dist/site/index.html
+          grep -q "content=\"$VERSION\"" dist/site/index.html || { echo "::error::Numéro de version non inscrit dans index.html"; exit 1; }
+          echo "Version : $VERSION"
+
           printf '%s' "$API_CONFIG" > dist/site/api/config.php
           printf '%s' "$SERVICE_ACCOUNT" > dist/site/api/private/service-account.json
 

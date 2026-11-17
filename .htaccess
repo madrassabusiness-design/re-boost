@@ -47,4 +47,8 @@ AddType application/manifest+json .webmanifest
     <FilesMatch "\.(html|js|css|webmanifest)$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
+    # Numéro de version en ligne : jamais en cache (bouton « Mettre à jour »)
+    <Files "version.json">
+        Header set Cache-Control "no-store"
+    </Files>
 </IfModule>

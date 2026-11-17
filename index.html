@@ -1348,15 +1348,17 @@
         input[readonly] { opacity: .75; cursor: not-allowed; }
         .header-actions .user-chip { padding-right: .8rem; }
 
+        /* Mobile / tablette : la carte de connexion s'affiche directement */
         @media (max-width: 980px) {
             .auth-screen { grid-template-columns: 1fr; }
-            .auth-brand { border-right: 0; border-bottom: 1px solid var(--border); gap: 1.4rem; padding-bottom: 2rem; }
-            .auth-headline { font-size: clamp(2rem, 7vw, 2.8rem); }
-            .auth-perks { display: none; }
-            .auth-visual { display: none; }
+            .auth-brand { display: none; }
+            .auth-side { align-content: center; min-height: 100vh; min-height: 100dvh; padding: 1.2rem 1rem 5.5rem; }
         }
+
+        /* Achat / activation : une seule colonne centrée */
+        .auth-grid.single { grid-template-columns: minmax(0, 520px); justify-content: center; }
+
         @media (max-width: 640px) {
-            .auth-lead { font-size: .95rem; margin-bottom: 0; }
             .header-actions .btn.logout-btn { display: inline-flex; padding: .6rem .75rem; }
             .logout-btn .logout-text { display: none; }
             .header-actions .user-chip { display: none; }
@@ -1954,12 +1956,6 @@
                 <div class="auth-brand-body">
                     <span class="eyebrow hero-anim" style="--d:.3s"><span class="tag">FORMATION</span> Boostage des réseaux sociaux</span>
                     <h2 class="auth-headline hero-anim" style="--d:.45s">Propulsez votre <span class="grad-text">influence</span> digitale</h2>
-                    <p class="auth-lead hero-anim" style="--d:.6s">Créez votre compte pour accéder à la formation RE-BOOST et retrouvez votre espace sur tous vos appareils.</p>
-                    <ul class="auth-perks hero-anim" style="--d:.75s">
-                        <li><span><i class="fas fa-play"></i></span> Formation vidéo complète en boostage des réseaux</li>
-                        <li><span><i class="fas fa-infinity"></i></span> Accès à vie, paiement unique</li>
-                        <li><span><i class="fas fa-mobile-screen"></i></span> Paiement Mobile Money sécurisé</li>
-                    </ul>
                 </div>
 
                 <div class="auth-visual" aria-hidden="true">
@@ -2099,10 +2095,6 @@
                             <span class="w" aria-hidden="true"><span style="--i:3">digitale</span></span>
                         </h2>
 
-                        <p class="hero-typed hero-anim" style="--d:.9s">Boostez votre présence sur <span class="typed" id="typed">TikTok</span><span class="caret" aria-hidden="true"></span></p>
-
-                        <p class="hero-desc hero-anim" style="--d:1.05s">Votre partenaire dédié à la croissance de votre influence digitale. Formez-vous au boostage des réseaux sociaux : un paiement unique par Mobile Money et un accès à vie à toute la formation.</p>
-
                         <div class="hero-ctas hero-anim" style="--d:1.2s">
                             <a href="#tarifs" class="btn btn-success"><i class="fas fa-bolt"></i> Acheter la formation — <span data-price="lifetime">15 000 FC</span></a>
                             <a href="#activation" class="btn btn-ghost" data-open-tab="license"><i class="fas fa-key"></i> J'ai déjà une clé</a>
@@ -2144,68 +2136,12 @@
             </div>
         </section>
 
-        <!-- Bandeau défilant -->
-        <div class="ticker" aria-hidden="true">
-            <div class="ticker-track">
-                <span class="ticker-item">TikTok <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Instagram <i class="fas fa-star"></i></span>
-                <span class="ticker-item">YouTube <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Facebook <i class="fas fa-star"></i></span>
-                <span class="ticker-item">Marketing digital <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Création de contenu <i class="fas fa-star"></i></span>
-                <span class="ticker-item">Monétisation <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Visibilité <i class="fas fa-star"></i></span>
-                <!-- duplication pour une boucle continue -->
-                <span class="ticker-item">TikTok <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Instagram <i class="fas fa-star"></i></span>
-                <span class="ticker-item">YouTube <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Facebook <i class="fas fa-star"></i></span>
-                <span class="ticker-item">Marketing digital <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Création de contenu <i class="fas fa-star"></i></span>
-                <span class="ticker-item">Monétisation <i class="fas fa-star"></i></span>
-                <span class="ticker-item outline">Visibilité <i class="fas fa-star"></i></span>
-            </div>
-        </div>
-
-        <!-- Fonctionnalités -->
-        <section class="section">
-            <div class="container">
-                <div class="section-head" data-reveal>
-                    <span class="eyebrow-plain" data-scramble>// Fonctionnalités</span>
-                    <h2 class="section-title">Tout ce qu'il faut pour <span class="grad-text">grandir</span></h2>
-                    <p class="section-sub">Une plateforme unique pour apprendre, publier mieux et accélérer votre croissance sur les réseaux sociaux.</p>
-                </div>
-
-                <div class="features-grid">
-                    <article class="feature-card glass spotlight" data-tilt data-reveal style="--d:0s">
-                        <span class="card-num">01</span>
-                        <div class="feature-icon"><i class="fas fa-play"></i></div>
-                        <h3>Formations vidéo exclusives</h3>
-                        <p>TikTok Masterclass, marketing digital, création de contenu : des stratégies concrètes qui convertissent.</p>
-                    </article>
-                    <article class="feature-card glass spotlight" data-tilt data-reveal style="--d:.12s">
-                        <span class="card-num">02</span>
-                        <div class="feature-icon orange"><i class="fas fa-rocket"></i></div>
-                        <h3>Boost multi-réseaux</h3>
-                        <p>Augmentez votre visibilité sur TikTok, Instagram, YouTube et Facebook depuis un seul espace.</p>
-                    </article>
-                    <article class="feature-card glass spotlight" data-tilt data-reveal style="--d:.24s">
-                        <span class="card-num">03</span>
-                        <div class="feature-icon green"><i class="fab fa-whatsapp"></i></div>
-                        <h3>Accompagnement dédié</h3>
-                        <p>Une question ? L'équipe RE-BOOST vous répond directement sur WhatsApp.</p>
-                    </article>
-                </div>
-            </div>
-        </section>
-
         <!-- Tarifs -->
         <section class="section pricing-section" id="tarifs">
             <div class="container">
                 <div class="section-head" data-reveal>
                     <span class="eyebrow-plain" data-scramble>// Tarifs</span>
                     <h2 class="section-title">Une formation, <span class="grad-text">un accès à vie</span></h2>
-                    <p class="section-sub">Formation complète en boostage des réseaux sociaux. Pas d'abonnement : payez une fois par Mobile Money et gardez l'accès pour toujours.</p>
                 </div>
 
                 <article class="offer-card glass glow-border" data-tilt data-reveal="zoom">
@@ -2215,15 +2151,12 @@
                         <h3>Formation RE-BOOST</h3>
                         <p class="plan-duration">Boostage des réseaux sociaux — accès à vie</p>
                         <div class="offer-price"><span data-price="lifetime">15 000 FC</span></div>
-                        <p class="offer-note">Payé une seule fois — jamais de frais mensuels</p>
                     </div>
                     <div class="offer-side">
                         <ul class="plan-features">
-                            <li><i class="fas fa-check"></i> Formation vidéo complète en boostage des réseaux</li>
-                            <li><i class="fas fa-check"></i> Stratégies TikTok, Instagram, YouTube et Facebook</li>
-                            <li><i class="fas fa-check"></i> Accès à vie + futures mises à jour de la formation</li>
+                            <li><i class="fas fa-check"></i> Formation vidéo complète</li>
+                            <li><i class="fas fa-check"></i> Accès à vie</li>
                             <li><i class="fas fa-check"></i> Assistance WhatsApp</li>
-                            <li><i class="fas fa-check"></i> Accès immédiat après paiement</li>
                         </ul>
                         <button class="btn btn-success btn-block choose-plan" data-plan="lifetime"><i class="fas fa-bolt"></i> Acheter la formation</button>
                     </div>
@@ -2241,40 +2174,7 @@
         <!-- Achat & activation -->
         <section class="auth-section" id="activation">
             <div class="container">
-                <div class="auth-grid">
-                    <div class="auth-intro" data-reveal="left">
-                        <span class="eyebrow-plain" data-scramble>// Accès immédiat</span>
-                        <h2 class="section-title">Votre accès <span class="grad-text">en 3 étapes</span></h2>
-                        <p class="section-sub">Pas d'attente : votre tableau de bord s'ouvre dès que le paiement est confirmé.</p>
-
-                        <ol class="steps">
-                            <li class="step">
-                                <div class="step-icon"><i class="fas fa-user-pen"></i></div>
-                                <div>
-                                    <span class="step-num">ÉTAPE 01</span>
-                                    <h4>Indiquez vos informations</h4>
-                                    <p>Votre nom et votre email, pour retrouver votre accès à tout moment.</p>
-                                </div>
-                            </li>
-                            <li class="step">
-                                <div class="step-icon"><i class="fas fa-mobile-screen"></i></div>
-                                <div>
-                                    <span class="step-num">ÉTAPE 02</span>
-                                    <h4>Payez <span data-price="lifetime">15 000 FC</span> une seule fois</h4>
-                                    <p>Airtel Money, Orange Money ou Vodacom, sur la page sécurisée SasPay.</p>
-                                </div>
-                            </li>
-                            <li class="step">
-                                <div class="step-icon"><i class="fas fa-unlock"></i></div>
-                                <div>
-                                    <span class="step-num">ÉTAPE 03</span>
-                                    <h4>Accédez à vie à votre espace</h4>
-                                    <p>Dès la confirmation, votre accès est activé automatiquement, sans date d'expiration.</p>
-                                </div>
-                            </li>
-                        </ol>
-                    </div>
-
+                <div class="auth-grid single">
                     <div class="auth-panel" data-reveal="right" style="--d:.15s">
                         <div class="auth-tabs" role="tablist">
                             <span class="tab-indicator" aria-hidden="true"></span>
@@ -2285,7 +2185,6 @@
                         <!-- Achat en ligne -->
                         <form id="buy-form" class="auth-form glass glow-border active" novalidate>
                             <h3><i class="fas fa-cart-shopping"></i> Acheter la formation</h3>
-                            <p class="form-sub">Vous allez être redirigé vers la page de paiement sécurisée SasPay.</p>
 
                             <input type="hidden" name="plan" id="buy-plan" value="lifetime">
                             <div class="order-summary">
@@ -2324,13 +2223,11 @@
                             </div>
 
                             <button type="submit" class="btn btn-success btn-block" id="buy-submit"><i class="fas fa-lock"></i> Payer maintenant</button>
-                            <p class="secure-note"><i class="fas fa-shield-halved"></i> Paiement traité par SasPay. RE-BOOST ne conserve aucune donnée de paiement.</p>
                         </form>
 
                         <!-- Activation avec une clé -->
                         <form id="license-form" class="auth-form glass glow-border">
                             <h3><i class="fas fa-bolt"></i> Activer votre licence</h3>
-                            <p class="form-sub">Saisissez la clé reçue après votre paiement ou de la part de l'administrateur.</p>
                             <div class="form-group">
                                 <label for="license-key">Clé de licence</label>
                                 <div class="input-wrap">
@@ -2353,14 +2250,6 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success btn-block">Activer la licence <i class="fas fa-arrow-right"></i></button>
-
-                            <div class="license-help">
-                                <i class="fas fa-circle-info"></i>
-                                <div>
-                                    <strong>Besoin d'aide ?</strong><br>
-                                    Contactez-nous sur <a href="https://wa.me/243896639509?text=👋 Bonjour, j'ai besoin d'aide pour ma licence RE-BOOST" target="_blank" rel="noopener">WhatsApp</a>, nous vous répondons rapidement.
-                                </div>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -2415,7 +2304,6 @@
                 <div class="dashboard-welcome" data-reveal>
                     <span class="eyebrow"><span class="tag">PRO</span> Tableau de bord</span>
                     <h2>Bonjour, <span class="grad-text" id="dashboard-hello-name">Utilisateur</span></h2>
-                    <p>Bienvenue sur votre tableau de bord — accédez à toutes les fonctionnalités de RE-BOOST.</p>
 
                     <div class="social-grid">
                         <a href="#" class="social-icon tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>

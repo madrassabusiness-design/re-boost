@@ -157,20 +157,11 @@ function initials(name) {
     return name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join('') || 'U';
 }
 
-// Remplit l'en-tête et les formulaires avec les informations du compte
+// Affiche le nom du compte dans l'en-tête
 function fillUserUi(user) {
     const name = displayName(user);
     $('offer-user-name').textContent = name;
     $('offer-avatar').textContent = initials(name);
-
-    // Achat et activation : l'email est celui du compte
-    for (const id of ['buy-email', 'user-email']) {
-        $(id).value = user.email || '';
-        $(id).readOnly = Boolean(user.email);
-    }
-    for (const id of ['buy-name', 'user-name']) {
-        if (!$(id).value) $(id).value = user.displayName || '';
-    }
 }
 
 function sessionFromLicense(key, license, user) {
@@ -347,8 +338,17 @@ document.querySelectorAll('.logout-btn').forEach(btn => btn.addEventListener('cl
 }));
 
 // -------------------------------------------------------------
-//  Activation avec une clé
+//  Activation avec une clé (fenêtre « J'ai déjà une clé »)
 // -------------------------------------------------------------
+const licenseModal = $('license-modal');
+
+function openLicenseModal(key = '') {
+    $('license-key').value = key;
+    licenseModal.classList.add('open');
+    setTimeout(() => $('license-key').focus(), 300);
+}
+$('open-license').addEventListener('click', () => openLicenseModal());
+
 $('license-form').addEventListener('submit', async function (e) {
     e.preventDefault();
     const btn = this.querySelector('button[type="submit"]');
@@ -356,9 +356,9 @@ $('license-form').addEventListener('submit', async function (e) {
     if (!user) return showAuthPage();
 
     const licenseKey = $('license-key').value.trim().toUpperCase();
-    const userName = $('user-name').value.trim();
+    const userName = displayName(user).slice(0, 100);
 
-    if (!licenseKey || !userName) return showAlert('Veuillez remplir tous les champs.', 'error');
+    if (!licenseKey) return showAlert('Saisissez votre clé de licence.', 'error');
     if (licenseKey.includes('/')) return showAlert('Clé de licence invalide.', 'error');
     if (!user.email) return showAlert('Votre compte n\'a pas d\'adresse email.', 'error');
 
@@ -382,8 +382,9 @@ $('license-form').addEventListener('submit', async function (e) {
         });
 
         $('license-key').value = '';
-        showAlert('Licence activée avec succès ! Redirection...', 'success');
-        setTimeout(() => openDashboardWith(licenseKey, { ...license, userName }, user), 1200);
+        licenseModal.classList.remove('open');
+        showAlert('Licence activée ! Bienvenue dans votre espace.', 'success');
+        openDashboardWith(licenseKey, { ...license, userName }, user);
     } catch (err) {
         showAlert(errorMessage(err), 'error');
     } finally {
@@ -409,15 +410,6 @@ function formatPrice(amount, currency) {
     }
 }
 
-function selectedPlan() {
-    return $('buy-plan').value || null;
-}
-
-function updateTotal() {
-    const plan = plansInfo && plansInfo.plans.find(p => p.id === selectedPlan());
-    $('buy-total').textContent = plan ? formatPrice(plan.price, plansInfo.currency) : '—';
-}
-
 async function loadPlans() {
     try {
         const data = await apiFetch('plans.php');
@@ -428,53 +420,33 @@ async function loadPlans() {
                 el.textContent = formatPrice(plan.price, plansInfo.currency);
             });
         });
-        updateTotal();
     } catch (err) {
         console.warn('[RE-BOOST] Prix indisponibles :', err.message);
     }
 }
 
-// Bouton « Acheter la formation » de la section Tarifs
-document.querySelectorAll('.choose-plan').forEach(btn => {
-    btn.addEventListener('click', () => {
-        $('buy-plan').value = btn.dataset.plan;
-        updateTotal();
-        openAuthTab('buy');
-        document.getElementById('activation').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => $('buy-phone').focus({ preventScroll: true }), 700);
-    });
-});
-
-$('buy-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const btn = $('buy-submit');
+// « Acheter la formation » : redirection directe vers la page de paiement SasPay
+// (nom et email repris du compte connecté)
+document.querySelectorAll('.choose-plan').forEach(btn => btn.addEventListener('click', async () => {
     const user = currentUser;
     if (!user) return showAuthPage();
 
-    const plan = selectedPlan();
-    const name = $('buy-name').value.trim();
     const email = (user.email || '').toLowerCase();
-    const phone = $('buy-phone').value.trim();
-
-    if (!plan) return showAlert('Choisissez une formule.', 'error');
-    if (!name) return showAlert('Indiquez votre nom complet.', 'error');
     if (!isValidEmail(email)) return showAlert('Votre compte n\'a pas d\'adresse email valide.', 'error');
-    if (phone && !/^\+?[\d\s.\-()]{8,20}$/.test(phone)) return showAlert('Numéro de téléphone invalide.', 'error');
 
     setLoading(btn, true);
     try {
         const result = await apiFetch('create-checkout.php', {
             method: 'POST',
-            body: JSON.stringify({ plan, name, email, phone, uid: user.uid })
+            body: JSON.stringify({ plan: btn.dataset.plan, name: displayName(user).slice(0, 100), email, uid: user.uid })
         });
         writeJson(PENDING_ORDER_KEY, { orderId: result.orderId, checkoutUrl: result.checkoutUrl, uid: user.uid, createdAt: Date.now() });
-        showAlert('Redirection vers la page de paiement sécurisée…', 'success');
-        setTimeout(() => { window.location.href = result.checkoutUrl; }, 600);
+        window.location.href = result.checkoutUrl;
     } catch (err) {
         showAlert(errorMessage(err), 'error');
         setLoading(btn, false);
     }
-});
+}));
 
 // -------------------------------------------------------------
 //  Retour de SasPay : confirmation du paiement
@@ -541,8 +513,6 @@ function renderPayment(state, data = {}) {
     on('pay-again', () => {
         paymentModal.classList.remove('open');
         showHomePage();
-        openAuthTab('buy');
-        document.getElementById('tarifs').scrollIntoView({ behavior: 'smooth' });
     });
     on('pay-copy', () => {
         navigator.clipboard.writeText(data.licenseKey || '')
@@ -556,30 +526,29 @@ function renderPayment(state, data = {}) {
         } else {
             // Paiement fait avec un autre compte : activation avec la clé
             showHomePage();
-            $('license-key').value = data.licenseKey || '';
-            openAuthTab('license');
-            document.getElementById('activation').scrollIntoView({ behavior: 'smooth' });
+            openLicenseModal(data.licenseKey || '');
         }
     });
 }
 
+// Paiement confirmé : accès direct au tableau de bord
 async function onOrderPaid(orderId, status) {
     removeKey(PENDING_ORDER_KEY);
-    let linked = false;
     try {
         if (currentUser) {
             const found = await findLicenseForUser(currentUser);
             if (found && found.key === status.licenseKey) {
-                const session = sessionFromLicense(found.key, found.data, currentUser);
-                writeJson(SESSION_KEY, session);
-                populateDashboard(session);
-                linked = true;
+                paymentModal.classList.remove('open');
+                openDashboardWith(found.key, found.data, currentUser);
+                showAlert('Paiement confirmé ! Bienvenue dans votre espace.', 'success');
+                return;
             }
         }
     } catch (err) {
         console.error(err);
     }
-    renderPayment('paid', { ...status, orderId, linked });
+    // Cas rare : licence créée pour un autre compte → on affiche la clé à activer
+    renderPayment('paid', { ...status, orderId, linked: false });
 }
 
 function startPolling(orderId, checkoutUrl) {

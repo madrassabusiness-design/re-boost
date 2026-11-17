@@ -1352,7 +1352,7 @@
         @media (max-width: 980px) {
             .auth-screen { grid-template-columns: 1fr; }
             .auth-brand { display: none; }
-            .auth-side { align-content: center; min-height: 100vh; min-height: 100dvh; padding: 1.2rem 1rem 5.5rem; }
+            .auth-side { align-content: center; min-height: 100vh; min-height: 100dvh; padding: 3.8rem 1rem 5.5rem; }
         }
 
         /* Achat / activation : une seule colonne centrée */
@@ -1402,6 +1402,49 @@
             .update-banner { flex-wrap: wrap; bottom: .8rem; }
             .ub-text { flex-basis: calc(100% - 100px); }
             .update-banner #update-btn { flex: 1; }
+        }
+
+        /* Page d'offre minimale : la carte de paiement seule, centrée */
+        .offer-page {
+            min-height: calc(100vh - 80px);
+            min-height: calc(100dvh - 80px);
+            display: grid;
+            align-content: center;
+            padding: 2rem 0 6rem;
+        }
+        .offer-page .pay-methods { margin-top: 1.6rem; }
+        .key-link { display: flex; align-items: center; gap: .5rem; margin: 1.6rem auto 0; font-size: .95rem; }
+        .key-link i { font-size: .85rem; }
+        .license-modal { max-width: 440px; }
+        .license-modal h2 { display: flex; align-items: center; gap: .6rem; font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 1.4rem; }
+        .license-modal h2 i { color: var(--amber); font-size: 1.1rem; }
+
+        /* Bouton « Mettre à jour » toujours visible */
+        .update-check-btn.is-loading > i { display: none; }
+        .update-fab {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 5;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            color: var(--text-2);
+            background: rgba(255,255,255,.05);
+            border: 1px solid var(--border-strong);
+            cursor: pointer;
+            transition: color .3s, background .3s, transform .4s var(--ease);
+        }
+        .update-fab:hover { color: #fff; background: rgba(62,230,168,.15); transform: rotate(90deg); }
+        .update-fab.is-loading { pointer-events: none; }
+        .update-fab.is-loading i { animation: spinRing .8s linear infinite; display: inline-block; }
+        .auth-side { position: relative; }
+        @media (max-width: 640px) {
+            .header-actions .btn.update-check-btn { display: inline-flex; padding: .6rem .75rem; }
+            .update-check-btn .btn-label { display: none; }
+            .update-fab { top: .6rem; right: .6rem; width: 38px; height: 38px; }
         }
 
         /* Installation de l'application */
@@ -1966,6 +2009,7 @@
             </section>
 
             <section class="auth-side">
+                <button type="button" class="update-check-btn update-fab" title="Mettre à jour l'application" aria-label="Mettre à jour l'application"><i class="fas fa-arrows-rotate"></i></button>
                 <div class="auth-panel auth-card-wrap hero-anim" style="--d:.5s">
                     <div class="auth-tabs" role="tablist">
                         <span class="tab-indicator" aria-hidden="true"></span>
@@ -2070,7 +2114,7 @@
                     </a>
                     <div class="header-actions">
                         <button type="button" class="btn btn-ghost btn-small install-btn" hidden title="Installer l'application RE-BOOST"><i class="fas fa-download"></i><span class="install-text">Installer l'app</span></button>
-                        <a href="#tarifs" class="btn btn-primary btn-small">Acheter <i class="fas fa-arrow-right"></i></a>
+                        <button type="button" class="btn btn-ghost btn-small update-check-btn" title="Mettre à jour l'application"><i class="fas fa-arrows-rotate"></i><span class="btn-label">Mettre à jour</span></button>
                         <div class="user-chip">
                             <span class="avatar" id="offer-avatar">U</span>
                             <span class="name-text" id="offer-user-name">Utilisateur</span>
@@ -2081,70 +2125,10 @@
             </div>
         </header>
 
-        <!-- Hero -->
-        <section class="welcome-section">
+        <!-- Offre : uniquement la carte de paiement -->
+        <main class="offer-page">
             <div class="container">
-                <div class="hero-grid welcome-content">
-                    <div class="hero-text">
-                        <span class="eyebrow hero-anim" style="--d:.3s"><span class="tag">NEW</span> Bienvenue sur RE-BOOST</span>
-
-                        <h2 class="hero-title" aria-label="Propulsez votre influence digitale">
-                            <span class="w" aria-hidden="true"><span style="--i:0">Propulsez</span></span>
-                            <span class="w" aria-hidden="true"><span style="--i:1">votre</span></span>
-                            <span class="w" aria-hidden="true"><span class="grad-text" style="--i:2">influence</span></span>
-                            <span class="w" aria-hidden="true"><span style="--i:3">digitale</span></span>
-                        </h2>
-
-                        <div class="hero-ctas hero-anim" style="--d:1.2s">
-                            <a href="#tarifs" class="btn btn-success"><i class="fas fa-bolt"></i> Acheter la formation — <span data-price="lifetime">15 000 FC</span></a>
-                            <a href="#activation" class="btn btn-ghost" data-open-tab="license"><i class="fas fa-key"></i> J'ai déjà une clé</a>
-                        </div>
-
-                        <div class="social-row hero-anim" style="--d:1.35s">
-                            <span class="social-label">Suivez-nous</span>
-                            <div class="social-grid">
-                                <a href="#" class="social-icon tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                                <a href="#" class="social-icon facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" class="social-icon youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                                <a href="#" class="social-icon instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="hero-visual" aria-hidden="true">
-                        <div class="orbit-system" id="orbit-system">
-                            <div class="ring ring-1"></div>
-                            <div class="ring ring-2"></div>
-                            <div class="ring ring-3"></div>
-                            <div class="orbit orbit-a"><span class="planet tiktok"><i class="fab fa-tiktok"></i></span></div>
-                            <div class="orbit orbit-b"><span class="planet instagram"><i class="fab fa-instagram"></i></span></div>
-                            <div class="orbit orbit-c"><span class="planet youtube"><i class="fab fa-youtube"></i></span></div>
-                            <div class="orbit orbit-d"><span class="planet facebook"><i class="fab fa-facebook-f"></i></span></div>
-                            <div class="core">
-                                <div class="core-glow"></div>
-                                <div class="core-card">
-                                    <img src="Images/Logo reboost.jpg" alt="" class="core-logo">
-                                    <span class="scan"></span>
-                                </div>
-                            </div>
-                            <div class="float-chip chip-1"><i class="fas fa-arrow-trend-up"></i> Croissance</div>
-                            <div class="float-chip chip-2"><i class="fas fa-graduation-cap"></i> Formations</div>
-                            <div class="float-chip chip-3"><i class="fas fa-bolt"></i> Boost</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tarifs -->
-        <section class="section pricing-section" id="tarifs">
-            <div class="container">
-                <div class="section-head" data-reveal>
-                    <span class="eyebrow-plain" data-scramble>// Tarifs</span>
-                    <h2 class="section-title">Une formation, <span class="grad-text">un accès à vie</span></h2>
-                </div>
-
-                <article class="offer-card glass glow-border" data-tilt data-reveal="zoom">
+                <article class="offer-card glass glow-border" data-tilt>
                     <div class="offer-main">
                         <span class="plan-badge">Paiement unique</span>
                         <div class="plan-icon gold"><i class="fas fa-infinity"></i></div>
@@ -2158,124 +2142,24 @@
                             <li><i class="fas fa-check"></i> Accès à vie</li>
                             <li><i class="fas fa-check"></i> Assistance WhatsApp</li>
                         </ul>
-                        <button class="btn btn-success btn-block choose-plan" data-plan="lifetime"><i class="fas fa-bolt"></i> Acheter la formation</button>
+                        <button type="button" class="btn btn-success btn-block choose-plan" id="buy-btn" data-plan="lifetime"><i class="fas fa-bolt"></i> Acheter la formation</button>
                     </div>
                 </article>
 
-                <div class="pay-methods" data-reveal>
-                    <span class="pay-label"><i class="fas fa-shield-halved"></i> Paiement sécurisé SasPay</span>
+                <div class="pay-methods">
                     <span class="pay-chip airtel"><i class="fas fa-mobile-screen"></i> Airtel Money</span>
                     <span class="pay-chip orange-m"><i class="fas fa-mobile-screen"></i> Orange Money</span>
                     <span class="pay-chip vodacom"><i class="fas fa-mobile-screen"></i> Vodacom</span>
                 </div>
+
+                <button type="button" class="link-btn key-link" id="open-license"><i class="fas fa-key"></i> J'ai déjà une clé</button>
             </div>
-        </section>
+        </main>
 
-        <!-- Achat & activation -->
-        <section class="auth-section" id="activation">
-            <div class="container">
-                <div class="auth-grid single">
-                    <div class="auth-panel" data-reveal="right" style="--d:.15s">
-                        <div class="auth-tabs" role="tablist">
-                            <span class="tab-indicator" aria-hidden="true"></span>
-                            <button class="tab-btn active" data-tab="buy" id="buy-tab" role="tab"><i class="fas fa-cart-shopping"></i> Acheter en ligne</button>
-                            <button class="tab-btn" data-tab="license" id="license-tab" role="tab"><i class="fas fa-key"></i> J'ai une clé</button>
-                        </div>
-
-                        <!-- Achat en ligne -->
-                        <form id="buy-form" class="auth-form glass glow-border active" novalidate>
-                            <h3><i class="fas fa-cart-shopping"></i> Acheter la formation</h3>
-
-                            <input type="hidden" name="plan" id="buy-plan" value="lifetime">
-                            <div class="order-summary">
-                                <div class="os-icon"><i class="fas fa-infinity"></i></div>
-                                <div class="os-text">
-                                    <strong>Formation RE-BOOST</strong>
-                                    <span>Boostage des réseaux sociaux · accès à vie</span>
-                                </div>
-                                <span class="os-price" data-price="lifetime">15 000 FC</span>
-                            </div>
-                            <div class="form-group">
-                                <label for="buy-name">Votre nom complet</label>
-                                <div class="input-wrap">
-                                    <i class="fas fa-user"></i>
-                                    <input type="text" id="buy-name" placeholder="Votre nom complet" autocomplete="name" maxlength="100" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="buy-email">Votre email</label>
-                                <div class="input-wrap">
-                                    <i class="fas fa-envelope"></i>
-                                    <input type="email" id="buy-email" placeholder="vous@exemple.com" autocomplete="email" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="buy-phone">Numéro Mobile Money <span class="optional">(facultatif)</span></label>
-                                <div class="input-wrap">
-                                    <i class="fas fa-phone"></i>
-                                    <input type="tel" id="buy-phone" placeholder="+243 8X XXX XXXX" autocomplete="tel">
-                                </div>
-                            </div>
-
-                            <div class="order-total">
-                                <span>Total à payer</span>
-                                <strong id="buy-total">—</strong>
-                            </div>
-
-                            <button type="submit" class="btn btn-success btn-block" id="buy-submit"><i class="fas fa-lock"></i> Payer maintenant</button>
-                        </form>
-
-                        <!-- Activation avec une clé -->
-                        <form id="license-form" class="auth-form glass glow-border">
-                            <h3><i class="fas fa-bolt"></i> Activer votre licence</h3>
-                            <div class="form-group">
-                                <label for="license-key">Clé de licence</label>
-                                <div class="input-wrap">
-                                    <i class="fas fa-key"></i>
-                                    <input type="text" id="license-key" name="license_key" placeholder="REBOOST-XXXX-XXXX-XXXX" autocomplete="off" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-email">Votre email</label>
-                                <div class="input-wrap">
-                                    <i class="fas fa-envelope"></i>
-                                    <input type="email" id="user-email" name="email" placeholder="vous@exemple.com" autocomplete="email" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="user-name">Votre nom complet</label>
-                                <div class="input-wrap">
-                                    <i class="fas fa-user"></i>
-                                    <input type="text" id="user-name" name="name" placeholder="Votre nom complet" autocomplete="name" required>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-success btn-block">Activer la licence <i class="fas fa-arrow-right"></i></button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Bouton WhatsApp flottant -->
-        <a href="https://wa.me/243896639509?text=👋 Bonjour, je souhaite obtenir une licence pour RE-BOOST" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contacter RE-BOOST sur WhatsApp">
+        <a href="https://wa.me/243896639509?text=👋 Bonjour, j'ai besoin d'aide pour RE-BOOST" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contacter RE-BOOST sur WhatsApp">
             <i class="fab fa-whatsapp"></i>
             <span class="wa-tip">Besoin d'aide ?</span>
         </a>
-
-        <footer class="footer">
-            <div class="container">
-                <div class="footer-content">
-                    <div class="footer-brand">
-                        <img src="Images/Logo reboost.jpg" alt="">
-                        <p>&copy; <span class="year">2025</span> RE-BOOST. Tous droits réservés.</p>
-                    </div>
-                    <div class="footer-links">
-                        <a href="#" id="mentions-legales">Mentions légales</a>
-                        <a href="mailto:masamunatresor6@gmail.com">Contact</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
     </div>
 
     <!-- ===================== TABLEAU DE BORD ===================== -->
@@ -2289,6 +2173,7 @@
                     </div>
                     <div class="user-info">
                         <button type="button" class="btn btn-ghost btn-small install-btn" hidden title="Installer l'application RE-BOOST"><i class="fas fa-download"></i><span class="install-text">Installer l'app</span></button>
+                        <button type="button" class="btn btn-ghost btn-small update-check-btn" title="Mettre à jour l'application"><i class="fas fa-arrows-rotate"></i><span class="btn-label">Mettre à jour</span></button>
                         <div class="user-chip">
                             <span class="avatar" id="user-avatar">U</span>
                             <span class="name-text" id="dashboard-user-name">Utilisateur</span>
@@ -2379,6 +2264,24 @@
                 <li><span>2</span><p>Choisissez <strong>« Sur l'écran d'accueil »</strong> <i class="far fa-square-plus"></i></p></li>
                 <li><span>3</span><p>Touchez <strong>Ajouter</strong> en haut à droite</p></li>
             </ol>
+        </div>
+    </div>
+
+    <!-- Activer une clé (licence créée par l'administrateur) -->
+    <div id="license-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="license-title">
+        <div class="modal-content glass glow-border license-modal">
+            <span class="close" role="button" tabindex="0" aria-label="Fermer">&times;</span>
+            <form id="license-form" novalidate>
+                <h2 id="license-title"><i class="fas fa-key"></i> Activer une clé</h2>
+                <div class="form-group">
+                    <label for="license-key">Clé de licence</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-key"></i>
+                        <input type="text" id="license-key" name="license_key" placeholder="REBOOST-XXXX-XXXX-XXXX" autocomplete="off" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Activer <i class="fas fa-arrow-right"></i></button>
+            </form>
         </div>
     </div>
 
@@ -2838,19 +2741,42 @@
                 setTimeout(() => { banner.hidden = true; }, 500);
             }
 
-            updateBtn.addEventListener('click', async () => {
-                updateBtn.disabled = true;
-                updateBtn.classList.add('is-loading');
+            async function applyUpdate() {
                 try {
                     const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null;
                     if (reg) await reg.update();
                 } catch (e) { /* le rechargement suffit */ }
                 location.reload();
+            }
+
+            updateBtn.addEventListener('click', () => {
+                updateBtn.disabled = true;
+                updateBtn.classList.add('is-loading');
+                applyUpdate();
             });
             document.getElementById('update-later').addEventListener('click', () => {
                 dismissed = banner.dataset.version; // reproposé seulement pour une version plus récente
                 hideBanner();
             });
+
+            // Boutons « Mettre à jour » toujours visibles : vérifier maintenant
+            document.querySelectorAll('.update-check-btn').forEach(btn => btn.addEventListener('click', async () => {
+                btn.disabled = true;
+                btn.classList.add('is-loading');
+                const online = await onlineVersion();
+                if (!online) {
+                    btn.disabled = false;
+                    btn.classList.remove('is-loading');
+                    return showAlert('Vérification impossible. Vérifiez votre connexion internet.', 'error');
+                }
+                if (current && online === current) {
+                    btn.disabled = false;
+                    btn.classList.remove('is-loading');
+                    return showAlert('Vous avez déjà la dernière version ✔', 'success');
+                }
+                showAlert('Nouvelle version trouvée : mise à jour…', 'success');
+                applyUpdate();
+            }));
 
             check();
             setInterval(check, 2 * 60 * 1000);
@@ -2867,7 +2793,6 @@
             showAlert(msg, 'error');
         }
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
-        document.getElementById('buy-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
         document.getElementById('login-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
         document.getElementById('register-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
 

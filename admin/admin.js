@@ -7,7 +7,8 @@
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
-    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+    GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
     getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, orderBy, limit,
@@ -93,7 +94,10 @@ function authError(err) {
         'auth/invalid-email': 'Adresse email invalide.',
         'auth/too-many-requests': 'Trop de tentatives. Réessayez dans quelques minutes.',
         'auth/network-request-failed': 'Connexion internet indisponible.',
-        'auth/operation-not-allowed': "La connexion par email n'est pas activée dans Firebase.",
+        'auth/operation-not-allowed': "Cette méthode de connexion n'est pas activée dans Firebase.",
+        'auth/unauthorized-domain': "Ce domaine n'est pas autorisé dans Firebase Authentication.",
+        'auth/account-exists-with-different-credential': 'Ce compte utilise une autre méthode de connexion.',
+        'auth/popup-blocked': 'La fenêtre Google a été bloquée.',
         'permission-denied': 'Accès refusé par la base de données.'
     };
     if (err && err.userMessage) return err.userMessage;
@@ -452,6 +456,28 @@ $('login-form').addEventListener('submit', async e => {
         setLoading(btn, false);
     }
 });
+
+// Connexion avec Google (même compte, mêmes droits : document admins/{UID})
+$('google-btn').addEventListener('click', async () => {
+    const btn = $('google-btn');
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    loginError('');
+    setLoading(btn, true);
+    try {
+        await signInWithPopup(auth, provider);
+        // La suite (vérification des droits) est gérée par onAuthStateChanged
+    } catch (err) {
+        if (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment') {
+            await signInWithRedirect(auth, provider);
+        } else if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
+            loginError(authError(err));
+        }
+    } finally {
+        setLoading(btn, false);
+    }
+});
+getRedirectResult(auth).catch(err => loginError(authError(err)));
 
 $('logout-btn').addEventListener('click', async () => {
     await signOut(auth);

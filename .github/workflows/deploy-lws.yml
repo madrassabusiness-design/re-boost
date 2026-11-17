@@ -68,8 +68,10 @@ jobs:
 
           # Contrôles avant envoi
           for f in dist/site/api/*.php; do php -l "$f" > /dev/null; done
-          php -r 'json_decode(file_get_contents("dist/site/api/private/service-account.json"), true) or exit(1);' \
-            || { echo "::error::FIREBASE_SERVICE_ACCOUNT n'est pas un JSON valide"; exit 1; }
+          php -r '$c = require "dist/site/api/config.php"; exit(is_array($c) && !empty($c["saspay"]["secret_key"]) && !empty($c["license_secret"]) ? 0 : 1);' > /dev/null \
+            || { echo "::error::Le secret LWS_API_CONFIG ne contient pas le fichier api/config.php complet"; exit 1; }
+          php -r '$j = json_decode(file_get_contents("dist/site/api/private/service-account.json"), true); exit(($j["type"] ?? "") === "service_account" && !empty($j["private_key"]) ? 0 : 1);' \
+            || { echo "::error::Le secret FIREBASE_SERVICE_ACCOUNT ne contient pas la clé du compte de service Firebase (JSON)"; exit 1; }
           echo "Fichiers prêts :"; (cd dist/site && find . -type f | grep -v 'service-account\|config.php' | sort)
 
       - name: Envoyer sur LWS (FTP)

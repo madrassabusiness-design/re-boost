@@ -42,6 +42,8 @@ jobs:
         run: |
           if [ -z "$SERVICE_ACCOUNT" ]; then echo "::error::Secret GitHub FIREBASE_SERVICE_ACCOUNT manquant"; exit 1; fi
           printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-sa.json"
+          node -e 'const j = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")); if (j.type !== "service_account" || !j.private_key) process.exit(1);' "$RUNNER_TEMP/firebase-sa.json" \
+            || { echo "::error::Le secret FIREBASE_SERVICE_ACCOUNT ne contient pas la clé du compte de service Firebase (JSON)"; exit 1; }
 
       # Règles : publiées par l'API Firebase Rules (la clé du compte de service
       # n'a pas le droit « Service Usage » qu'exige « firebase deploy » pour Firestore)

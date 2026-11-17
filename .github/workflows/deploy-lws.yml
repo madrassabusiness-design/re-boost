@@ -1,0 +1,83 @@
+# =============================================================
+#  Déploiement automatique du site public sur LWS (FTP)
+#  Se lance à chaque push sur « main » qui modifie un fichier du site,
+#  ou à la main depuis l'onglet « Actions » de GitHub.
+#
+#  Secrets GitHub nécessaires (Settings > Secrets and variables > Actions) :
+#    LWS_FTP_SERVER     serveur FTP LWS (ex. ftp.mondomaine.com)
+#    LWS_FTP_USERNAME   identifiant FTP
+#    LWS_FTP_PASSWORD   mot de passe FTP
+#    LWS_API_CONFIG     contenu complet du fichier api/config.php
+#    FIREBASE_SERVICE_ACCOUNT  contenu complet de api/private/service-account.json
+#  Facultatifs :
+#    LWS_FTP_DIR        dossier du site sur le FTP (par défaut : htdocs/)
+#    LWS_FTP_PROTOCOL   ftp (par défaut) ou ftps
+# =============================================================
+name: Site public → LWS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - '.htaccess'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - 'Images/**'
+      - 'js/**'
+      - 'api/**'
+      - 'deploy/fichiers-lws.txt'
+      - '.github/workflows/deploy-lws.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-lws
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Envoi sur LWS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Préparer les fichiers du site (avec les secrets)
+        env:
+          API_CONFIG: ${{ secrets.LWS_API_CONFIG }}
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          set -euo pipefail
+          for name in API_CONFIG SERVICE_ACCOUNT; do
+            if [ -z "${!name}" ]; then echo "::error::Secret GitHub manquant pour $name"; exit 1; fi
+          done
+
+          mkdir -p dist/site
+          while IFS= read -r line || [ -n "$line" ]; do
+            entry="$(echo "$line" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+            case "$entry" in ''|'#'*) continue ;; esac
+            if [ "${entry%/}" != "$entry" ]; then
+              mkdir -p "dist/site/$entry" && cp -a "$entry." "dist/site/$entry"
+            else
+              mkdir -p "dist/site/$(dirname "$entry")" && cp -a "$entry" "dist/site/$entry"
+            fi
+          done < deploy/fichiers-lws.txt
+
+          printf '%s' "$API_CONFIG" > dist/site/api/config.php
+          printf '%s' "$SERVICE_ACCOUNT" > dist/site/api/private/service-account.json
+
+          # Contrôles avant envoi
+          for f in dist/site/api/*.php; do php -l "$f" > /dev/null; done
+          php -r 'json_decode(file_get_contents("dist/site/api/private/service-account.json"), true) or exit(1);' \
+            || { echo "::error::FIREBASE_SERVICE_ACCOUNT n'est pas un JSON valide"; exit 1; }
+          echo "Fichiers prêts :"; (cd dist/site && find . -type f | grep -v 'service-account\|config.php' | sort)
+
+      - name: Envoyer sur LWS (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.LWS_FTP_SERVER }}
+          username: ${{ secrets.LWS_FTP_USERNAME }}
+          password: ${{ secrets.LWS_FTP_PASSWORD }}
+          protocol: ${{ secrets.LWS_FTP_PROTOCOL || 'ftp' }}
+          local-dir: ./dist/site/
+          server-dir: ${{ secrets.LWS_FTP_DIR || 'htdocs/' }}

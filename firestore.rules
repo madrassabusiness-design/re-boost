@@ -1,0 +1,62 @@
+rules_version = '2';
+
+// =============================================================
+//  Règles de sécurité Firestore — RE-BOOST
+//  À copier dans : Console Firebase > Firestore Database > Règles
+// =============================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Un administrateur = un document admins/{son UID}, créé à la main dans la console
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Liste des administrateurs : personne ne peut la modifier depuis le site
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Commandes SasPay : écrites uniquement par le serveur de paiement
+    // (compte de service), consultables par l'administrateur
+    match /orders/{orderId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    match /licenses/{key} {
+      // L'administrateur peut tout faire
+      allow read, write: if isAdmin();
+
+      // Un client peut lire UNE licence s'il connaît sa clé (impossible de lister les clés)
+      allow get: if signedIn();
+
+      // Un client peut retrouver la licence liée à son appareil
+      allow list: if signedIn() && resource.data.activatedUid == request.auth.uid;
+
+      // Un client peut activer une licence (ou la relier à un nouvel appareil avec le même email)
+      allow update: if signedIn()
+        && resource.data.status == 'active'
+        && (resource.data.expiresAt == null || resource.data.expiresAt > request.time)
+        && (resource.data.clientEmail == null
+            || resource.data.clientEmail == request.resource.data.activatedBy)
+        && (resource.data.activated == false
+            || resource.data.activatedBy == request.resource.data.activatedBy)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['activated', 'activatedAt', 'activatedBy', 'activatedUid', 'userName'])
+        && request.resource.data.activated == true
+        && request.resource.data.activatedUid == request.auth.uid
+        && request.resource.data.activatedAt == request.time
+        && request.resource.data.activatedBy is string
+        && request.resource.data.activatedBy.size() <= 200
+        && request.resource.data.userName is string
+        && request.resource.data.userName.size() > 0
+        && request.resource.data.userName.size() <= 100;
+    }
+  }
+}

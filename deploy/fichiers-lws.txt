@@ -1,0 +1,20 @@
+# Fichiers envoyés sur LWS (dossier htdocs).
+# Utilisé par deploy/creer-zip-lws.ps1 et par le déploiement automatique GitHub.
+# Un chemin par ligne ; un dossier se termine par « / » (envoyé en entier).
+# Les secrets (api/config.php, api/private/service-account.json) sont ajoutés à part.
+index.html
+.htaccess
+manifest.webmanifest
+sw.js
+Images/
+js/app.js
+js/firebase-config.js
+api/.htaccess
+api/boot.php
+api/lib.php
+api/settings.php
+api/plans.php
+api/create-checkout.php
+api/order-status.php
+api/saspay-webhook.php
+api/private/.htaccess

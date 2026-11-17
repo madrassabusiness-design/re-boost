@@ -1,0 +1,18 @@
+{
+  "name": "RE-BOOST — Formation boostage réseaux sociaux",
+  "short_name": "RE-BOOST",
+  "description": "Formation complète en boostage des réseaux sociaux, accès à vie.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#04070f",
+  "theme_color": "#04070f",
+  "lang": "fr",
+  "icons": [
+    { "src": "Images/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "Images/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "Images/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

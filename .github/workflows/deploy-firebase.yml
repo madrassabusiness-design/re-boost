@@ -1,0 +1,56 @@
+# =============================================================
+#  Déploiement automatique de l'application admin et des règles Firestore
+#  Se lance à chaque push sur « main » qui modifie l'admin ou les règles,
+#  ou à la main depuis l'onglet « Actions » de GitHub.
+#
+#  Secret GitHub nécessaire :
+#    FIREBASE_SERVICE_ACCOUNT  contenu complet de api/private/service-account.json
+# =============================================================
+name: Admin + règles → Firebase
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'admin/**'
+      - 'firestore.rules'
+      - 'firebase.json'
+      - 'deploy/publier-regles.mjs'
+      - '.github/workflows/deploy-firebase.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-firebase
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Envoi sur Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Clé du compte de service
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$SERVICE_ACCOUNT" ]; then echo "::error::Secret GitHub FIREBASE_SERVICE_ACCOUNT manquant"; exit 1; fi
+          printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-sa.json"
+
+      # Règles : publiées par l'API Firebase Rules (la clé du compte de service
+      # n'a pas le droit « Service Usage » qu'exige « firebase deploy » pour Firestore)
+      - name: Publier les règles Firestore
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa.json
+        run: node deploy/publier-regles.mjs
+
+      - name: Publier l'application admin (Firebase Hosting)
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa.json
+        run: npx --yes firebase-tools@15.33.0 deploy --only hosting --project reboost-cd96c --non-interactive

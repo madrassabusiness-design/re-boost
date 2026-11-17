@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#04070f">
+    <title>RE-BOOST Admin</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="RE-BOOST Admin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #04070f;
+            --bg-2: #070c18;
+            --panel: rgba(14, 22, 42, .72);
+            --panel-solid: #0b1324;
+            --border: rgba(120, 160, 255, .13);
+            --border-strong: rgba(120, 170, 255, .28);
+            --blue: #1f7bff;
+            --cyan: #2ad4ff;
+            --orange: #ff7a1a;
+            --amber: #ffb020;
+            --text: #eef3ff;
+            --text-2: #c3cfe6;
+            --muted: #8394b6;
+            --success: #3ee6a8;
+            --error: #ff5d7a;
+            --grad-brand: linear-gradient(120deg, #2ad4ff 0%, #1f7bff 38%, #ff7a1a 72%, #ffb020 100%);
+            --grad-blue: linear-gradient(135deg, #2ad4ff, #1f7bff 55%, #0b3fb8);
+            --grad-orange: linear-gradient(135deg, #ffb020, #ff7a1a 60%, #ff5a1a);
+            --ease: cubic-bezier(.2, .8, .2, 1);
+            --font-display: 'Space Grotesk', 'Inter', sans-serif;
+            --font-body: 'Inter', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            font-family: var(--font-body);
+            color: var(--text);
+            background:
+                radial-gradient(ellipse 70% 50% at 0% 0%, rgba(31, 91, 255, .18), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 100% 100%, rgba(255, 106, 26, .1), transparent 60%),
+                var(--bg);
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+        }
+        [hidden] { display: none !important; }
+        button { font: inherit; color: inherit; }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(120,160,255,.2); border-radius: 10px; border: 2px solid var(--bg); }
+
+        /* ---------- Boutons & champs ---------- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+            padding: .8rem 1.3rem;
+            border: 0; border-radius: 12px;
+            font-family: var(--font-display); font-weight: 600; font-size: .92rem;
+            cursor: pointer; text-decoration: none;
+            transition: transform .3s var(--ease), box-shadow .3s, background .3s, opacity .3s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:active { transform: translateY(0) scale(.98); }
+        .btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+        .btn-primary { color: #fff; background: var(--grad-blue); box-shadow: 0 10px 28px -10px rgba(31,123,255,.8), inset 0 1px rgba(255,255,255,.25); }
+        .btn-orange { color: #1a0b00; background: var(--grad-orange); box-shadow: 0 10px 28px -10px rgba(255,122,26,.8), inset 0 1px rgba(255,255,255,.35); }
+        .btn-ghost { background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px var(--border-strong); }
+        .btn-ghost:hover { background: rgba(255,255,255,.08); }
+        .btn-block { width: 100%; }
+        .btn-sm { padding: .45rem .75rem; font-size: .78rem; border-radius: 9px; }
+        .btn.is-loading { pointer-events: none; opacity: .7; }
+        .btn.is-loading > i { display: none; }
+        .btn.is-loading::before { content: ""; width: 15px; height: 15px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: spin .7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .field { margin-bottom: 1.1rem; }
+        .field label { display: block; margin-bottom: .45rem; font-size: .8rem; font-weight: 600; letter-spacing: .03em; color: var(--text-2); }
+        .input { position: relative; }
+        .input > i { position: absolute; left: .95rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .88rem; pointer-events: none; }
+        .input input, .input select {
+            width: 100%;
+            padding: .85rem .95rem .85rem 2.6rem;
+            font: inherit; font-size: .95rem; color: var(--text);
+            background: rgba(4, 9, 20, .75);
+            border: 1px solid rgba(120,160,255,.18); border-radius: 12px;
+            transition: border-color .25s, box-shadow .25s;
+        }
+        .input select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238394b6' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
+        .input select option { background: var(--panel-solid); }
+        .input input:focus, .input select:focus { outline: none; border-color: rgba(42,212,255,.7); box-shadow: 0 0 0 4px rgba(42,212,255,.1); }
+        .input input::placeholder { color: #56668a; }
+
+        /* ---------- Connexion ---------- */
+        .login { height: 100%; display: grid; place-items: center; padding: 1.5rem; overflow-y: auto; }
+        .login-card {
+            position: relative;
+            width: 100%; max-width: 420px;
+            padding: 2.4rem 2.1rem;
+            border-radius: 24px;
+            background: linear-gradient(160deg, rgba(20, 32, 60, .78), rgba(9, 15, 30, .88));
+            border: 1px solid var(--border);
+            box-shadow: 0 40px 90px -30px rgba(0,0,0,.8), inset 0 1px rgba(255,255,255,.06);
+            animation: rise .7s var(--ease) both;
+        }
+        @keyframes rise { from { opacity: 0; transform: translateY(20px) scale(.98); } to { opacity: 1; transform: none; } }
+        .login-logo { width: 74px; height: 74px; border-radius: 20px; background: #fff; padding: 5px; margin: 0 auto 1.3rem; box-shadow: 0 0 50px rgba(31,123,255,.45); }
+        .login-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 15px; }
+        .login h1 { text-align: center; font-family: var(--font-display); font-size: 1.6rem; letter-spacing: -.02em; }
+        .login h1 span { background: var(--grad-brand); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .login p.sub { text-align: center; color: var(--muted); font-size: .9rem; margin: .4rem 0 1.8rem; }
+        .login-error { display: none; margin-bottom: 1rem; padding: .75rem .9rem; font-size: .86rem; color: #ffb3c0; background: rgba(255,93,122,.1); border: 1px solid rgba(255,93,122,.35); border-radius: 10px; }
+        .login-error.show { display: block; animation: rise .4s var(--ease) both; }
+        .boot { display: grid; place-items: center; height: 100%; color: var(--muted); }
+        .boot .ring { width: 46px; height: 46px; border-radius: 50%; border: 3px solid rgba(120,160,255,.15); border-top-color: var(--cyan); border-right-color: var(--orange); animation: spin 1s linear infinite; }
+
+        /* ---------- Application ---------- */
+        .app { display: grid; grid-template-columns: 250px 1fr; height: 100%; }
+        .sidebar {
+            display: flex; flex-direction: column;
+            padding: 1.4rem 1rem;
+            background: rgba(5, 9, 19, .7);
+            border-right: 1px solid var(--border);
+            backdrop-filter: blur(14px);
+        }
+        .brand { display: flex; align-items: center; gap: .75rem; padding: 0 .5rem 1.6rem; }
+        .brand img { width: 40px; height: 40px; border-radius: 11px; background: #fff; padding: 2px; object-fit: contain; box-shadow: 0 0 22px rgba(31,123,255,.35); }
+        .brand strong { display: block; font-family: var(--font-display); letter-spacing: .14em; font-size: 1rem; }
+        .brand small { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .2em; color: var(--orange); }
+        .nav { display: grid; gap: .3rem; }
+        .nav button {
+            position: relative;
+            display: flex; align-items: center; gap: .8rem;
+            width: 100%; padding: .78rem .9rem;
+            font-size: .92rem; font-weight: 500; text-align: left; color: var(--muted);
+            background: transparent; border: 0; border-radius: 11px; cursor: pointer;
+            transition: color .25s, background .25s;
+        }
+        .nav button i { width: 18px; text-align: center; }
+        .nav button:hover { color: var(--text); background: rgba(255,255,255,.04); }
+        .nav button.active { color: #fff; background: linear-gradient(135deg, rgba(31,123,255,.3), rgba(42,212,255,.1)); box-shadow: inset 0 0 0 1px rgba(42,212,255,.28); }
+        .nav button.active::before { content: ""; position: absolute; left: -1rem; top: 25%; bottom: 25%; width: 3px; border-radius: 0 3px 3px 0; background: var(--grad-brand); }
+        .nav .count { margin-left: auto; padding: .1rem .5rem; font-size: .7rem; font-weight: 700; border-radius: 999px; color: #1a0b00; background: var(--grad-orange); }
+        .sidebar-foot { margin-top: auto; padding: 1rem .5rem 0; border-top: 1px solid var(--border); }
+        .who { font-size: .78rem; color: var(--muted); margin-bottom: .8rem; word-break: break-all; }
+        .who strong { display: block; color: var(--text-2); font-weight: 600; }
+
+        .main { display: flex; flex-direction: column; min-width: 0; height: 100%; }
+        .topbar {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1.1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(5, 9, 19, .45);
+            backdrop-filter: blur(14px);
+        }
+        .topbar h1 { font-family: var(--font-display); font-size: 1.35rem; letter-spacing: -.02em; }
+        .live { display: inline-flex; align-items: center; gap: .45rem; padding: .3rem .7rem; font-size: .72rem; font-weight: 600; color: var(--success); border-radius: 999px; background: rgba(62,230,168,.1); }
+        .live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
+        .live.off { color: var(--amber); background: rgba(255,176,32,.1); }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(62,230,168,.6); } 70% { box-shadow: 0 0 0 8px rgba(62,230,168,0); } 100% { box-shadow: 0 0 0 0 rgba(62,230,168,0); } }
+        .search { margin-left: auto; width: min(320px, 40vw); }
+        .search input { padding-top: .65rem; padding-bottom: .65rem; }
+        .content { flex: 1; overflow-y: auto; padding: 1.8rem 2rem 3rem; }
+        .view { animation: rise .45s var(--ease) both; }
+
+        .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.6rem; }
+        .stat {
+            position: relative; overflow: hidden;
+            padding: 1.3rem 1.3rem 1.2rem;
+            border-radius: 18px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+        }
+        .stat::after { content: ""; position: absolute; right: -30px; top: -30px; width: 110px; height: 110px; border-radius: 50%; background: var(--glow, rgba(31,123,255,.25)); filter: blur(30px); }
+        .stat .icon { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; margin-bottom: .9rem; color: #fff; background: var(--icon, var(--grad-blue)); }
+        .stat .label { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+        .stat .value { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -.03em; margin-top: .2rem; }
+        .stat.orange { --icon: var(--grad-orange); --glow: rgba(255,122,26,.22); }
+        .stat.green { --icon: linear-gradient(135deg, #3ee6a8, #17a874); --glow: rgba(62,230,168,.2); }
+        .stat.gold { --icon: linear-gradient(135deg, #ffe08a, #f5a623); --glow: rgba(245,166,35,.2); }
+
+        .panel {
+            border-radius: 18px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+        .panel + .panel { margin-top: 1.4rem; }
+        .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.3rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .panel-head h2 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; display: flex; align-items: center; gap: .6rem; }
+        .panel-head h2 i { color: var(--cyan); }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem; }
+        .grid-2 .panel + .panel { margin-top: 0; }
+
+        .chips { display: flex; gap: .4rem; flex-wrap: wrap; }
+        .chip { padding: .38rem .75rem; font-size: .78rem; font-weight: 600; color: var(--muted); background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 999px; cursor: pointer; transition: all .25s; }
+        .chip:hover { color: var(--text); }
+        .chip.active { color: #fff; border-color: rgba(42,212,255,.45); background: rgba(31,123,255,.2); }
+
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+        th { padding: .75rem 1.3rem; text-align: left; font-family: var(--font-mono); font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); background: rgba(31,123,255,.05); white-space: nowrap; }
+        td { padding: .85rem 1.3rem; border-top: 1px solid rgba(120,160,255,.07); color: var(--text-2); vertical-align: middle; }
+        tbody tr { transition: background .2s; }
+        tbody tr:hover { background: rgba(31,123,255,.05); }
+        tbody tr.flash { animation: flash 1.8s ease; }
+        @keyframes flash { 0% { background: rgba(62,230,168,.25); } 100% { background: transparent; } }
+        td.mono { font-family: var(--font-mono); font-size: .78rem; color: #bfe9ff; white-space: nowrap; }
+        td small { display: block; color: var(--muted); font-size: .76rem; }
+        td.num { font-family: var(--font-display); font-weight: 600; color: var(--text); white-space: nowrap; }
+        .actions { display: flex; gap: .35rem; justify-content: flex-end; }
+        .icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9px; border: 1px solid var(--border-strong); background: rgba(255,255,255,.03); color: var(--text-2); cursor: pointer; transition: all .25s; }
+        .icon-btn:hover { color: #fff; background: rgba(31,123,255,.2); }
+        .icon-btn.danger:hover { background: rgba(255,93,122,.18); border-color: rgba(255,93,122,.5); }
+        .icon-btn.ok:hover { background: rgba(62,230,168,.18); border-color: rgba(62,230,168,.5); }
+        .empty { padding: 2.4rem 1rem; text-align: center; color: var(--muted); font-size: .9rem; }
+        .empty i { display: block; font-size: 1.6rem; margin-bottom: .6rem; opacity: .5; }
+
+        .pill { display: inline-flex; align-items: center; gap: .4rem; padding: .22rem .62rem; font-size: .74rem; font-weight: 600; border-radius: 999px; white-space: nowrap; }
+        .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .pill.green { color: var(--success); background: rgba(62,230,168,.1); }
+        .pill.amber { color: var(--amber); background: rgba(255,176,32,.1); }
+        .pill.red { color: var(--error); background: rgba(255,93,122,.1); }
+        .pill.grey { color: var(--muted); background: rgba(131,148,182,.12); }
+        .pill.blue { color: var(--cyan); background: rgba(42,212,255,.1); }
+        .src { font-size: .7rem; font-family: var(--font-mono); letter-spacing: .06em; color: var(--muted); }
+
+        .new-grid { display: grid; grid-template-columns: minmax(0, 460px) minmax(0, 1fr); gap: 1.4rem; align-items: start; }
+        .form-body { padding: 1.4rem 1.3rem 1.5rem; }
+        .result {
+            padding: 1.5rem;
+            border-radius: 18px;
+            background: linear-gradient(160deg, rgba(62,230,168,.08), rgba(9,15,30,.85));
+            border: 1px solid rgba(62,230,168,.3);
+            animation: rise .5s var(--ease) both;
+        }
+        .result h3 { font-family: var(--font-display); color: var(--success); margin-bottom: 1rem; display: flex; gap: .6rem; align-items: center; }
+        .result .key { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .9rem 1rem; border-radius: 12px; background: rgba(4,9,20,.85); border: 1px solid rgba(42,212,255,.3); margin-bottom: 1rem; }
+        .result .key code { font-family: var(--font-mono); font-size: 1.05rem; color: #bfe9ff; }
+        .result dl { display: grid; grid-template-columns: auto 1fr; gap: .45rem 1rem; font-size: .9rem; }
+        .result dt { color: var(--muted); }
+        .hint { padding: 1.4rem; border-radius: 18px; border: 1px dashed var(--border-strong); color: var(--muted); font-size: .9rem; line-height: 1.6; }
+        .hint strong { color: var(--text-2); }
+
+        .toasts { position: fixed; right: 1.2rem; bottom: 1.2rem; display: grid; gap: .6rem; z-index: 100; width: min(360px, calc(100vw - 2.4rem)); }
+        .toast { display: flex; gap: .7rem; align-items: flex-start; padding: .9rem 1rem; font-size: .88rem; border-radius: 13px; background: rgba(10,18,36,.95); border: 1px solid var(--border-strong); box-shadow: 0 20px 50px -10px rgba(0,0,0,.7); animation: rise .4s var(--ease) both; }
+        .toast.success i { color: var(--success); }
+        .toast.error { border-color: rgba(255,93,122,.45); }
+        .toast.error i { color: var(--error); }
+        .toast.out { opacity: 0; transform: translateY(10px); transition: all .35s; }
+
+        @media (max-width: 1100px) {
+            .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid-2, .new-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 760px) {
+            body { overflow: auto; }
+            .app { grid-template-columns: 1fr; height: auto; }
+            .sidebar { flex-direction: row; flex-wrap: wrap; align-items: center; gap: .6rem; padding: .8rem; }
+            .brand { padding: 0; }
+            .nav { grid-auto-flow: column; overflow-x: auto; }
+            .nav button.active::before { display: none; }
+            .sidebar-foot { margin: 0 0 0 auto; padding: 0; border: 0; }
+            .who { display: none; }
+            .topbar { padding: .9rem 1rem; flex-wrap: wrap; }
+            .search { width: 100%; }
+            .content { padding: 1.2rem 1rem 2rem; overflow: visible; }
+            .stats { grid-template-columns: 1fr 1fr; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Démarrage -->
+    <div class="boot" id="boot-view"><div class="ring"></div></div>
+
+    <!-- Connexion -->
+    <div class="login" id="login-view" hidden>
+        <form class="login-card" id="login-form" novalidate>
+            <div class="login-logo"><img src="icon-192.png" alt="RE-BOOST"></div>
+            <h1>RE-BOOST <span>Admin</span></h1>
+            <p class="sub">Gestion des licences et des paiements</p>
+            <div class="login-error" id="login-error" role="alert"></div>
+            <div class="field">
+                <label for="login-email">Email</label>
+                <div class="input"><i class="fas fa-envelope"></i><input type="email" id="login-email" autocomplete="username" placeholder="admin@exemple.com" required></div>
+            </div>
+            <div class="field">
+                <label for="login-password">Mot de passe</label>
+                <div class="input"><i class="fas fa-lock"></i><input type="password" id="login-password" autocomplete="current-password" placeholder="••••••••" required></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="login-btn">Se connecter <i class="fas fa-arrow-right"></i></button>
+            <button type="button" class="btn btn-ghost btn-block install-btn" hidden style="margin-top:.7rem"><i class="fas fa-download"></i> Installer l'application</button>
+        </form>
+    </div>
+
+    <!-- Application -->
+    <div class="app" id="app-view" hidden>
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="icon-192.png" alt="">
+                <div><strong>REBOOST</strong><small>ADMIN</small></div>
+            </div>
+            <nav class="nav" aria-label="Navigation">
+                <button class="active" data-view="overview"><i class="fas fa-chart-pie"></i> Vue d'ensemble</button>
+                <button data-view="orders"><i class="fas fa-credit-card"></i> Paiements <span class="count" id="nav-pending" hidden></span></button>
+                <button data-view="licenses"><i class="fas fa-key"></i> Licences</button>
+                <button data-view="new"><i class="fas fa-wand-magic-sparkles"></i> Nouvelle licence</button>
+            </nav>
+            <div class="sidebar-foot">
+                <button type="button" class="btn btn-ghost btn-sm btn-block install-btn" hidden style="margin-bottom:.6rem"><i class="fas fa-download"></i> Installer l'application</button>
+                <p class="who">Connecté<strong id="who-email"></strong></p>
+                <button class="btn btn-ghost btn-sm btn-block" id="logout-btn"><i class="fas fa-right-from-bracket"></i> Déconnexion</button>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <h1 id="view-title">Vue d'ensemble</h1>
+                <span class="live" id="live-badge">Temps réel</span>
+                <div class="search input" id="search-box">
+                    <i class="fas fa-magnifying-glass"></i>
+                    <input type="search" id="search" placeholder="Rechercher (clé, nom, email…)">
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Vue d'ensemble -->
+                <section class="view" id="view-overview">
+                    <div class="stats">
+                        <div class="stat green"><div class="icon"><i class="fas fa-key"></i></div><div class="label">Licences actives</div><div class="value" id="st-active">—</div></div>
+                        <div class="stat"><div class="icon"><i class="fas fa-bag-shopping"></i></div><div class="label">Ventes confirmées</div><div class="value" id="st-sales">—</div></div>
+                        <div class="stat gold"><div class="icon"><i class="fas fa-coins"></i></div><div class="label">Chiffre d'affaires</div><div class="value" id="st-revenue">—</div></div>
+                        <div class="stat orange"><div class="icon"><i class="fas fa-hourglass-half"></i></div><div class="label">Paiements en attente</div><div class="value" id="st-pending">—</div></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="panel">
+                            <div class="panel-head"><h2><i class="fas fa-credit-card"></i> Derniers paiements</h2><button class="btn btn-ghost btn-sm" data-goto="orders">Tout voir</button></div>
+                            <div class="table-wrap" id="recent-orders"></div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-head"><h2><i class="fas fa-key"></i> Dernières licences</h2><button class="btn btn-ghost btn-sm" data-goto="licenses">Tout voir</button></div>
+                            <div class="table-wrap" id="recent-licenses"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Paiements -->
+                <section class="view" id="view-orders" hidden>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2><i class="fas fa-credit-card"></i> Paiements SasPay</h2>
+                            <div class="chips" data-filter-for="orders">
+                                <button class="chip active" data-filter="all">Tous</button>
+                                <button class="chip" data-filter="paid">Payés</button>
+                                <button class="chip" data-filter="pending">En attente</button>
+                                <button class="chip" data-filter="review">À vérifier</button>
+                                <button class="chip" data-filter="failed">Échoués</button>
+                            </div>
+                        </div>
+                        <div class="table-wrap" id="orders-table"></div>
+                    </div>
+                </section>
+
+                <!-- Licences -->
+                <section class="view" id="view-licenses" hidden>
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2><i class="fas fa-key"></i> Licences</h2>
+                            <div class="chips" data-filter-for="licenses">
+                                <button class="chip active" data-filter="all">Toutes</button>
+                                <button class="chip" data-filter="active">Actives</button>
+                                <button class="chip" data-filter="waiting">Non activées</button>
+                                <button class="chip" data-filter="expired">Expirées</button>
+                                <button class="chip" data-filter="revoked">Révoquées</button>
+                            </div>
+                        </div>
+                        <div class="table-wrap" id="licenses-table"></div>
+                    </div>
+                </section>
+
+                <!-- Nouvelle licence -->
+                <section class="view" id="view-new" hidden>
+                    <div class="new-grid">
+                        <div class="panel">
+                            <div class="panel-head"><h2><i class="fas fa-wand-magic-sparkles"></i> Générer une licence</h2></div>
+                            <form class="form-body" id="new-form" novalidate>
+                                <div class="field">
+                                    <label for="new-name">Nom du client <span style="color:var(--muted);font-weight:400">(facultatif)</span></label>
+                                    <div class="input"><i class="fas fa-user"></i><input type="text" id="new-name" maxlength="100" placeholder="Nom du client"></div>
+                                </div>
+                                <div class="field">
+                                    <label for="new-email">Email du client <span style="color:var(--muted);font-weight:400">(facultatif — limite la clé à cet email)</span></label>
+                                    <div class="input"><i class="fas fa-envelope"></i><input type="email" id="new-email" placeholder="client@exemple.com"></div>
+                                </div>
+                                <div class="field">
+                                    <label for="new-type">Formule</label>
+                                    <div class="input"><i class="fas fa-crown"></i>
+                                        <select id="new-type">
+                                            <option value="lifetime" selected>Formation — accès à vie</option>
+                                            <option value="standard">Standard — 1 mois</option>
+                                            <option value="premium">Premium — 3 mois</option>
+                                            <option value="vip">VIP — 12 mois</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-orange btn-block" id="new-btn"><i class="fas fa-wand-magic-sparkles"></i> Générer la licence</button>
+                            </form>
+                        </div>
+                        <div id="new-result">
+                            <div class="hint">
+                                <strong>Licences manuelles</strong><br>
+                                Utilisez ce formulaire pour un client qui a payé autrement (espèces, transfert…). Les achats faits sur le site via SasPay créent leur licence automatiquement : vous les retrouvez dans <strong>Paiements</strong> et <strong>Licences</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+
+    <script>
+        // Installation de l'application (bouton « Installer l'application »)
+        (function () {
+            let deferred = null;
+            const standalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+            const refresh = () => document.querySelectorAll('.install-btn').forEach(b => { b.hidden = standalone() || !deferred; });
+            window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; refresh(); });
+            window.addEventListener('appinstalled', () => { deferred = null; refresh(); });
+            document.querySelectorAll('.install-btn').forEach(b => b.addEventListener('click', async () => {
+                if (!deferred) return;
+                try {
+                    deferred.prompt();
+                    await deferred.userChoice;
+                    deferred = null;
+                } catch (err) { /* geste utilisateur requis */ }
+                refresh();
+            }));
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+            }
+        })();
+    </script>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

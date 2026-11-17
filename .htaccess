@@ -1,0 +1,50 @@
+# =============================================================
+#  RE-BOOST — configuration Apache pour l'hébergement LWS
+# =============================================================
+
+Options -Indexes
+DirectoryIndex index.html
+
+# --- HTTPS obligatoire ---------------------------------------
+# Activez d'abord le certificat SSL gratuit dans votre espace LWS
+# (Panel LWS > votre domaine > SSL), PUIS retirez les « # » ci-dessous.
+# RewriteEngine On
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# --- Fichiers techniques non accessibles depuis le web --------
+<FilesMatch "^(firebase\.json|firestore\.rules|\.firebaserc|\.gitignore|\.ftp-deploy-sync-state\.json|.*\.md|.*\.ps1|.*\.txt)$">
+    Require all denied
+</FilesMatch>
+
+# Dossiers qui n'ont rien à faire sur le serveur LWS (au cas où ils seraient envoyés)
+RedirectMatch 404 ^/(admin|desktop|deploy|\.git|\.github)(/|$)
+
+# --- Application installable ---------------------------------
+AddType application/manifest+json .webmanifest
+
+# --- Compression (pages plus rapides) -------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json application/manifest+json image/svg+xml
+</IfModule>
+
+# --- Cache navigateur -----------------------------------------
+# Pages et scripts : toujours revérifiés, pour que les mises à jour
+# soient visibles immédiatement. Images : gardées 30 jours.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 hour"
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType text/css "access plus 0 seconds"
+    ExpiresByType application/javascript "access plus 0 seconds"
+    ExpiresByType text/javascript "access plus 0 seconds"
+    ExpiresByType application/manifest+json "access plus 0 seconds"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|js|css|webmanifest)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

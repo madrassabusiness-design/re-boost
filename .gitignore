@@ -1,0 +1,11 @@
+# Secrets du serveur de paiement — ne jamais publier
+api/config.php
+api/private/*
+!api/private/.htaccess
+
+# Fichiers locaux
+.firebase/
+*.log
+
+# Zip de déploiement (contient des secrets)
+dist/

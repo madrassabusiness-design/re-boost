@@ -1,0 +1,16 @@
+{
+  "name": "RE-BOOST Admin",
+  "short_name": "RE-BOOST Admin",
+  "description": "Gestion des licences et des paiements RE-BOOST",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#04070f",
+  "theme_color": "#04070f",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

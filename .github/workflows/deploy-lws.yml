@@ -10,7 +10,7 @@
 #    LWS_API_CONFIG     contenu complet du fichier api/config.php
 #    FIREBASE_SERVICE_ACCOUNT  contenu complet de api/private/service-account.json
 #  Facultatifs :
-#    LWS_FTP_DIR        dossier du site sur le FTP (par défaut : htdocs/)
+#    LWS_FTP_DIR        dossier du site sur le FTP (par défaut : la racine du compte FTP, ./)
 #    LWS_FTP_PROTOCOL   ftps (par défaut, chiffré) ou ftp
 # =============================================================
 name: Site public → LWS
@@ -85,4 +85,5 @@ jobs:
           protocol: ${{ secrets.LWS_FTP_PROTOCOL || 'ftps' }}
           security: loose
           local-dir: ./dist/site/
-          server-dir: ${{ secrets.LWS_FTP_DIR || 'htdocs/' }}
+          # Le compte FTP de reboost-compte.assimmo.org s'ouvre directement dans le dossier du site
+          server-dir: ${{ secrets.LWS_FTP_DIR || './' }}

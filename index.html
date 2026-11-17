@@ -1253,6 +1253,113 @@
         .secure-note { margin-top: 1rem; text-align: center; font-size: .8rem; color: var(--muted); }
         .secure-note i { color: var(--success); margin-right: .3rem; }
 
+        /* =========================================================
+           PAGE DE CONNEXION / INSCRIPTION
+           ========================================================= */
+        .auth-screen {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+        }
+        .auth-brand {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4.5rem);
+            overflow: hidden;
+            border-right: 1px solid var(--border);
+            background:
+                radial-gradient(80% 60% at 0% 0%, rgba(31,91,255,.22), transparent 60%),
+                radial-gradient(60% 50% at 100% 100%, rgba(255,106,26,.14), transparent 60%);
+        }
+        .auth-brand-body { position: relative; z-index: 1; margin: auto 0; max-width: 520px; }
+        .auth-headline {
+            margin: 1.3rem 0 1rem;
+            font-family: var(--font-display);
+            font-size: clamp(2.3rem, 4.6vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.02;
+            letter-spacing: -.045em;
+        }
+        .auth-lead { color: var(--muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.8rem; }
+        .auth-perks { list-style: none; display: grid; gap: .85rem; }
+        .auth-perks li { display: flex; align-items: center; gap: .85rem; color: var(--text-2); font-size: .98rem; }
+        .auth-perks li span {
+            flex: 0 0 38px; height: 38px; border-radius: 11px;
+            display: grid; place-items: center;
+            color: var(--cyan);
+            background: rgba(31,123,255,.12);
+            border: 1px solid var(--border-strong);
+        }
+        .auth-perks li:nth-child(2) span { color: var(--amber); background: rgba(255,176,32,.1); }
+        .auth-perks li:nth-child(3) span { color: var(--success); background: rgba(62,230,168,.1); }
+
+        .auth-visual { position: absolute; right: -90px; bottom: -90px; width: 380px; height: 380px; pointer-events: none; opacity: .9; }
+        .auth-ring { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(90,150,255,.18); }
+        .auth-ring.r2 { inset: 18%; border-color: rgba(255,122,26,.22); }
+        .auth-ring::before { content: ""; position: absolute; inset: -1px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--cyan); animation: spinRing 8s linear infinite; }
+        .auth-ring.r2::before { border-top-color: transparent; border-bottom-color: var(--orange); animation-duration: 6s; animation-direction: reverse; }
+        .auth-logo-card {
+            position: absolute; inset: 34%;
+            border-radius: 26px; background: #fff; padding: 7%;
+            box-shadow: 0 0 0 1px rgba(255,255,255,.4), 0 0 70px rgba(31,123,255,.45);
+            animation: coreFloat 6s ease-in-out infinite;
+        }
+        .auth-logo-card img { width: 100%; height: 100%; object-fit: contain; }
+
+        .auth-side { display: grid; place-items: center; padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 3rem); }
+        .auth-card-wrap { width: 100%; max-width: 460px; }
+        .auth-card-wrap .auth-form { padding: clamp(1.5rem, 4vw, 2.2rem); }
+        .auth-card-wrap .auth-form h3 i { color: var(--amber); }
+
+        .btn-google {
+            color: #1f2937;
+            background: #fff;
+            box-shadow: 0 8px 24px -10px rgba(0,0,0,.6), inset 0 0 0 1px rgba(0,0,0,.06);
+            font-family: var(--font-body);
+            font-weight: 600;
+        }
+        .btn-google:hover { background: #f3f6fb; box-shadow: 0 12px 30px -10px rgba(255,255,255,.25); }
+        .btn-google svg { flex: 0 0 auto; }
+
+        .divider { display: flex; align-items: center; gap: .9rem; margin: 1.3rem 0; color: var(--muted); font-size: .8rem; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--border-strong); }
+
+        .pw-toggle {
+            position: absolute; right: .55rem; top: 50%; transform: translateY(-50%);
+            width: 34px; height: 34px; border-radius: 9px;
+            display: grid; place-items: center;
+            color: var(--muted); background: transparent; border: 0; cursor: pointer;
+            transition: color .2s, background .2s;
+        }
+        .pw-toggle:hover { color: var(--text); background: rgba(255,255,255,.06); }
+        .input-wrap:has(.pw-toggle) input { padding-right: 2.9rem; }
+
+        .form-row-end { display: flex; justify-content: flex-end; margin: -.5rem 0 1.2rem; }
+        .link-btn { background: none; border: 0; padding: 0; cursor: pointer; color: var(--cyan); font: inherit; font-size: .86rem; font-weight: 600; }
+        .link-btn:hover { text-decoration: underline; }
+        .switch-note { margin-top: 1.3rem; text-align: center; color: var(--muted); font-size: .9rem; }
+        .switch-note .link-btn { font-size: .9rem; }
+
+        input[readonly] { opacity: .75; cursor: not-allowed; }
+        .header-actions .user-chip { padding-right: .8rem; }
+
+        @media (max-width: 980px) {
+            .auth-screen { grid-template-columns: 1fr; }
+            .auth-brand { border-right: 0; border-bottom: 1px solid var(--border); gap: 1.4rem; padding-bottom: 2rem; }
+            .auth-headline { font-size: clamp(2rem, 7vw, 2.8rem); }
+            .auth-perks { display: none; }
+            .auth-visual { display: none; }
+        }
+        @media (max-width: 640px) {
+            .auth-lead { font-size: .95rem; margin-bottom: 0; }
+            .header-actions .btn.logout-btn { display: inline-flex; padding: .6rem .75rem; }
+            .logout-btn .logout-text { display: none; }
+            .header-actions .user-chip { display: none; }
+        }
+
         /* Installation de l'application */
         .install-btn[hidden] { display: none !important; }
         .install-btn i { animation: installNudge 2.6s ease-in-out infinite; }
@@ -1782,8 +1889,129 @@
     <!-- Notifications -->
     <div id="toast-container" class="toast-container" aria-live="polite"></div>
 
+    <!-- ===================== CONNEXION / INSCRIPTION ===================== -->
+    <div id="auth-page" class="page active">
+        <div class="auth-screen">
+            <section class="auth-brand">
+                <div class="logo">
+                    <img src="Images/Logo reboost.jpg" alt="RE-BOOST Logo" class="logo-img">
+                    <h1 data-scramble>REBOOST</h1>
+                </div>
+
+                <div class="auth-brand-body">
+                    <span class="eyebrow hero-anim" style="--d:.3s"><span class="tag">FORMATION</span> Boostage des réseaux sociaux</span>
+                    <h2 class="auth-headline hero-anim" style="--d:.45s">Propulsez votre <span class="grad-text">influence</span> digitale</h2>
+                    <p class="auth-lead hero-anim" style="--d:.6s">Créez votre compte pour accéder à la formation RE-BOOST et retrouvez votre espace sur tous vos appareils.</p>
+                    <ul class="auth-perks hero-anim" style="--d:.75s">
+                        <li><span><i class="fas fa-play"></i></span> Formation vidéo complète en boostage des réseaux</li>
+                        <li><span><i class="fas fa-infinity"></i></span> Accès à vie, paiement unique</li>
+                        <li><span><i class="fas fa-mobile-screen"></i></span> Paiement Mobile Money sécurisé</li>
+                    </ul>
+                </div>
+
+                <div class="auth-visual" aria-hidden="true">
+                    <div class="auth-ring r1"></div>
+                    <div class="auth-ring r2"></div>
+                    <div class="auth-logo-card"><img src="Images/Logo reboost.jpg" alt=""></div>
+                </div>
+            </section>
+
+            <section class="auth-side">
+                <div class="auth-panel auth-card-wrap hero-anim" style="--d:.5s">
+                    <div class="auth-tabs" role="tablist">
+                        <span class="tab-indicator" aria-hidden="true"></span>
+                        <button class="tab-btn active" data-tab="login" role="tab"><i class="fas fa-right-to-bracket"></i> Connexion</button>
+                        <button class="tab-btn" data-tab="register" role="tab"><i class="fas fa-user-plus"></i> Créer un compte</button>
+                    </div>
+
+                    <!-- Connexion -->
+                    <form id="login-form" class="auth-form glass glow-border active" novalidate>
+                        <h3><i class="fas fa-hand-sparkles"></i> Bon retour !</h3>
+                        <p class="form-sub">Connectez-vous pour accéder à votre espace RE-BOOST.</p>
+
+                        <button type="button" class="btn btn-google btn-block google-btn">
+                            <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+                            Continuer avec Google
+                        </button>
+                        <div class="divider"><span>ou avec votre email</span></div>
+
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <div class="input-wrap">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="login-email" placeholder="vous@exemple.com" autocomplete="email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Mot de passe</label>
+                            <div class="input-wrap">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required>
+                                <button type="button" class="pw-toggle" aria-label="Afficher le mot de passe"><i class="fas fa-eye"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-row-end"><button type="button" class="link-btn" id="forgot-btn">Mot de passe oublié ?</button></div>
+
+                        <button type="submit" class="btn btn-primary btn-block" id="login-submit">Se connecter <i class="fas fa-arrow-right"></i></button>
+                        <p class="switch-note">Pas encore de compte ? <button type="button" class="link-btn" data-switch="register">Créer un compte</button></p>
+                    </form>
+
+                    <!-- Inscription -->
+                    <form id="register-form" class="auth-form glass glow-border" novalidate>
+                        <h3><i class="fas fa-user-plus"></i> Créer votre compte</h3>
+                        <p class="form-sub">Quelques secondes suffisent pour rejoindre RE-BOOST.</p>
+
+                        <button type="button" class="btn btn-google btn-block google-btn">
+                            <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+                            S'inscrire avec Google
+                        </button>
+                        <div class="divider"><span>ou avec votre email</span></div>
+
+                        <div class="form-group">
+                            <label for="register-name">Nom complet</label>
+                            <div class="input-wrap">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="register-name" placeholder="Votre nom complet" autocomplete="name" maxlength="100" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <div class="input-wrap">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="register-email" placeholder="vous@exemple.com" autocomplete="email" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Mot de passe <span class="optional">(8 caractères minimum)</span></label>
+                            <div class="input-wrap">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="register-password" placeholder="••••••••" autocomplete="new-password" minlength="8" required>
+                                <button type="button" class="pw-toggle" aria-label="Afficher le mot de passe"><i class="fas fa-eye"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password2">Confirmez le mot de passe</label>
+                            <div class="input-wrap">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="register-password2" placeholder="••••••••" autocomplete="new-password" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-block" id="register-submit">Créer mon compte <i class="fas fa-arrow-right"></i></button>
+                        <p class="switch-note">Déjà inscrit ? <button type="button" class="link-btn" data-switch="login">Se connecter</button></p>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+        <a href="https://wa.me/243896639509?text=👋 Bonjour, j'ai besoin d'aide pour me connecter à RE-BOOST" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Aide WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+            <span class="wa-tip">Besoin d'aide ?</span>
+        </a>
+    </div>
+
     <!-- ===================== PAGE D'ACCUEIL ===================== -->
-    <div id="home-page" class="page active">
+    <div id="home-page" class="page">
         <header class="header">
             <div class="container">
                 <div class="header-content">
@@ -1793,10 +2021,12 @@
                     </a>
                     <div class="header-actions">
                         <button type="button" class="btn btn-ghost btn-small install-btn" hidden title="Installer l'application RE-BOOST"><i class="fas fa-download"></i><span class="install-text">Installer l'app</span></button>
-                        <div class="contact-info">
-                            <p><span class="live-dot"></span><i class="fas fa-phone"></i><span class="phone-text">+243 89 66 39 509</span></p>
-                        </div>
                         <a href="#tarifs" class="btn btn-primary btn-small">Acheter <i class="fas fa-arrow-right"></i></a>
+                        <div class="user-chip">
+                            <span class="avatar" id="offer-avatar">U</span>
+                            <span class="name-text" id="offer-user-name">Utilisateur</span>
+                        </div>
+                        <button type="button" id="offer-logout" class="btn btn-secondary btn-small logout-btn" title="Déconnexion"><i class="fas fa-right-from-bracket"></i><span class="logout-text"> Déconnexion</span></button>
                     </div>
                 </div>
             </div>
@@ -2121,7 +2351,7 @@
                             <span class="avatar" id="user-avatar">U</span>
                             <span class="name-text" id="dashboard-user-name">Utilisateur</span>
                         </div>
-                        <button id="logout-btn" class="btn btn-secondary btn-small"><i class="fas fa-right-from-bracket"></i> Déconnexion</button>
+                        <button id="logout-btn" class="btn btn-secondary btn-small logout-btn"><i class="fas fa-right-from-bracket"></i> Déconnexion</button>
                     </div>
                 </div>
             </div>
@@ -2263,22 +2493,27 @@
         const finePointer = window.matchMedia('(pointer: fine)').matches;
 
         // --- Fin du chargement ---
+        // L'écran de chargement attend de savoir si l'utilisateur est connecté
+        // (événement « reboost:auth-ready » envoyé par js/app.js), pour afficher
+        // directement la bonne page sans clignotement.
         (function initPreloader() {
             const start = performance.now();
-            const finish = () => {
+            const domReady = new Promise(resolve => {
+                if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', resolve);
+                else resolve();
+            });
+            const authReady = new Promise(resolve => {
+                document.addEventListener('reboost:auth-ready', resolve, { once: true });
+                setTimeout(resolve, 4500); // jamais bloquant
+            });
+            Promise.all([domReady, authReady]).then(() => {
                 const wait = Math.max(0, 900 - (performance.now() - start));
                 setTimeout(() => {
                     document.body.classList.add('loaded');
                     document.querySelectorAll('.page.active .logo [data-scramble]').forEach(scramble);
                 }, prefersReducedMotion ? 0 : wait);
-            };
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', finish);
-            } else {
-                finish();
-            }
-            // Sécurité : ne jamais bloquer l'affichage
-            setTimeout(() => document.body.classList.add('loaded'), 3000);
+            });
+            setTimeout(() => document.body.classList.add('loaded'), 6000);
         })();
 
         // --- Effet "décodage" des textes ---
@@ -2481,32 +2716,49 @@
            La partie base de données Firebase est dans js/app.js
            ========================================================= */
 
-        // --- Onglets Licence / Administration ---
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const authForms = document.querySelectorAll('.auth-form');
-        const tabIndicator = document.querySelector('.tab-indicator');
-
+        // --- Onglets (connexion / inscription, achat / clé) ---
+        // Chaque groupe d'onglets ne pilote que les formulaires de son propre bloc.
         function moveTabIndicator() {
-            const active = document.querySelector('.tab-btn.active');
-            if (!active || !tabIndicator) return;
-            tabIndicator.style.width = active.offsetWidth + 'px';
-            tabIndicator.style.transform = `translateX(${active.offsetLeft}px)`;
+            document.querySelectorAll('.auth-tabs').forEach(tabs => {
+                const active = tabs.querySelector('.tab-btn.active');
+                const indicator = tabs.querySelector('.tab-indicator');
+                if (!active || !indicator || !active.offsetWidth) return;
+                indicator.style.width = active.offsetWidth + 'px';
+                indicator.style.transform = `translateX(${active.offsetLeft}px)`;
+            });
         }
 
-        tabBtns.forEach(btn => {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const targetTab = this.getAttribute('data-tab');
-                tabBtns.forEach(b => b.classList.remove('active'));
+                const tabs = this.closest('.auth-tabs');
+                const panel = this.closest('.auth-panel');
+                tabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 moveTabIndicator();
-                authForms.forEach(form => {
-                    form.classList.toggle('active', form.id === `${targetTab}-form`);
+                panel.querySelectorAll('.auth-form').forEach(form => {
+                    form.classList.toggle('active', form.id === `${this.dataset.tab}-form`);
                 });
             });
         });
         window.addEventListener('resize', moveTabIndicator);
         requestAnimationFrame(moveTabIndicator);
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveTabIndicator);
+
+        // Liens « Créer un compte » / « Se connecter » sous les formulaires
+        document.querySelectorAll('[data-switch]').forEach(link => {
+            link.addEventListener('click', () => openAuthTab(link.dataset.switch));
+        });
+
+        // Afficher / masquer le mot de passe
+        document.querySelectorAll('.pw-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.parentElement.querySelector('input');
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                btn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+                btn.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+            });
+        });
 
         // --- Fenêtre des formations ---
         const trainingModal = document.getElementById('training-modal');
@@ -2524,22 +2776,20 @@
             if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
         });
 
-        // --- Changement de page ---
-        function showHomePage() {
-            document.getElementById('home-page').classList.add('active');
-            document.getElementById('dashboard-page').classList.remove('active');
+        // --- Changement de page : connexion → offre → tableau de bord ---
+        function showPage(id) {
+            const target = document.getElementById(id);
+            if (target.classList.contains('active')) return;
+            document.querySelectorAll('.page').forEach(page => page.classList.toggle('active', page === target));
             window.scrollTo(0, 0);
             requestAnimationFrame(moveTabIndicator);
-        }
-
-        function showDashboard() {
-            document.getElementById('home-page').classList.remove('active');
-            document.getElementById('dashboard-page').classList.add('active');
-            window.scrollTo(0, 0);
             if (document.body.classList.contains('loaded')) {
-                document.querySelectorAll('#dashboard-page .logo [data-scramble]').forEach(scramble);
+                target.querySelectorAll('.logo [data-scramble]').forEach(el => { delete el.dataset.scrambled; scramble(el); });
             }
         }
+        function showAuthPage() { showPage('auth-page'); }
+        function showHomePage() { showPage('home-page'); }
+        function showDashboard() { showPage('dashboard-page'); }
 
         // Remplir le tableau de bord avec les infos de la session
         function populateDashboard(session) {
@@ -2622,6 +2872,8 @@
         }
         document.getElementById('license-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
         document.getElementById('buy-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
+        document.getElementById('login-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
+        document.getElementById('register-form').addEventListener('submit', e => { e.preventDefault(); warnIfAppNotReady(); });
 
         // Ouvrir un onglet précis depuis un lien (ex. « J'ai déjà une clé »)
         function openAuthTab(tab) {

@@ -1,24 +1,25 @@
 // =============================================================
-//  RE-BOOST — site public : licences, achat SasPay, tableau de bord
+//  RE-BOOST — site public : comptes, achat SasPay, tableau de bord
 // -------------------------------------------------------------
-//  Base de données : Firestore (projet Firebase « reboost »)
-//    licenses/{CLÉ}   une licence (l'identifiant du document = la clé)
+//  Parcours : page de connexion → (pas encore client) page d'offre
+//                               → (client) tableau de bord
+//  Comptes  : Firebase Authentication — email + mot de passe, ou Google.
+//             L'accès suit le compte : il marche sur tous les appareils.
+//  Données  : Firestore — licenses/{CLÉ} (activatedUid = UID du compte)
 //  Paiement : serveur PHP du dossier api/ (SasPay)
-//    api/plans.php            prix des formules
+//    api/plans.php            prix de l'offre
 //    api/create-checkout.php  crée la commande et la session de paiement
 //    api/order-status.php     vérifie le paiement et crée la licence
 //
-//  Les clients sont connectés de façon anonyme (aucun mot de passe) :
-//  la licence est liée à cet appareil.
-//  L'administration est une application séparée (dossier admin/).
-//
-//  Les fonctions d'interface (showAlert, showDashboard, populateDashboard,
-//  openAuthTab…) sont définies dans le script de index.html.
+//  Les fonctions d'interface (showAlert, showAuthPage, showHomePage,
+//  showDashboard, populateDashboard, openAuthTab…) sont dans index.html.
 // =============================================================
 
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
-    getAuth, onAuthStateChanged, signInAnonymously, signOut
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    updateProfile, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,
+    signInWithRedirect, getRedirectResult, signOut
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
     getFirestore, doc, getDoc, updateDoc, collection, query, where, limit, getDocs, serverTimestamp
@@ -44,17 +45,13 @@ let db = null;
 if (isConfigured) {
     const app = initializeApp(firebaseConfig);
     auth = getAuth(app);
+    auth.languageCode = 'fr'; // emails (mot de passe oublié) et fenêtre Google en français
     db = getFirestore(app);
 } else {
     console.warn('[RE-BOOST] Firebase n\'est pas configuré : remplissez js/firebase-config.js');
 }
 
 window.reboostAppReady = true;
-
-const firstAuthState = new Promise(resolve => {
-    if (!auth) return resolve(null);
-    const unsubscribe = onAuthStateChanged(auth, user => { unsubscribe(); resolve(user); });
-});
 
 // -------------------------------------------------------------
 //  Outils
@@ -80,11 +77,19 @@ function errorMessage(err) {
     if (err && err.userMessage) return err.userMessage;
     console.error(err);
     const messages = {
+        'auth/invalid-credential': 'Email ou mot de passe incorrect.',
+        'auth/wrong-password': 'Email ou mot de passe incorrect.',
+        'auth/user-not-found': 'Aucun compte avec cet email. Créez votre compte.',
+        'auth/invalid-email': 'Adresse email invalide.',
+        'auth/email-already-in-use': 'Un compte existe déjà avec cet email. Connectez-vous.',
+        'auth/weak-password': 'Mot de passe trop faible (8 caractères minimum).',
+        'auth/user-disabled': 'Ce compte a été désactivé. Contactez le support.',
+        'auth/account-exists-with-different-credential': 'Un compte existe déjà avec cet email : connectez-vous avec votre email et votre mot de passe.',
+        'auth/popup-blocked': 'La fenêtre Google a été bloquée par le navigateur.',
         'auth/network-request-failed': 'Connexion internet indisponible.',
         'auth/too-many-requests': 'Trop de tentatives. Réessayez dans quelques minutes.',
-        'auth/operation-not-allowed': "La connexion anonyme n'est pas activée dans Firebase.",
-        'auth/admin-restricted-operation': "La connexion anonyme n'est pas activée dans Firebase.",
-        'auth/unauthorized-domain': "Ce domaine n'est pas autorisé dans Firebase Authentication.",
+        'auth/operation-not-allowed': "Cette méthode de connexion n'est pas activée dans Firebase.",
+        'auth/unauthorized-domain': "Ce site n'est pas encore autorisé dans Firebase (Authentication > Domaines autorisés).",
         'permission-denied': 'Accès refusé par la base de données.',
         'unavailable': 'Base de données injoignable. Vérifiez votre connexion.'
     };
@@ -119,23 +124,6 @@ function removeKey(key) {
     try { localStorage.removeItem(key); } catch (e) { /* ignoré */ }
 }
 
-function sessionFromLicense(key, license) {
-    return {
-        userName: license.userName,
-        userEmail: license.activatedBy,
-        licenseKey: key,
-        licenseType: license.type,
-        licenseExpiry: formatDate(license.expiresAt)
-    };
-}
-
-async function ensureUser() {
-    await firstAuthState;
-    if (auth.currentUser) return auth.currentUser;
-    const cred = await signInAnonymously(auth);
-    return cred.user;
-}
-
 async function apiFetch(path, options = {}) {
     let res;
     try {
@@ -157,89 +145,128 @@ async function apiFetch(path, options = {}) {
 }
 
 // -------------------------------------------------------------
-//  Licence liée à cet appareil
+//  Utilisateur connecté
 // -------------------------------------------------------------
+let currentUser = null;
+
+function displayName(user) {
+    return (user.displayName || '').trim() || (user.email || 'Utilisateur').split('@')[0];
+}
+
+function initials(name) {
+    return name.split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join('') || 'U';
+}
+
+// Remplit l'en-tête et les formulaires avec les informations du compte
+function fillUserUi(user) {
+    const name = displayName(user);
+    $('offer-user-name').textContent = name;
+    $('offer-avatar').textContent = initials(name);
+
+    // Achat et activation : l'email est celui du compte
+    for (const id of ['buy-email', 'user-email']) {
+        $(id).value = user.email || '';
+        $(id).readOnly = Boolean(user.email);
+    }
+    for (const id of ['buy-name', 'user-name']) {
+        if (!$(id).value) $(id).value = user.displayName || '';
+    }
+}
+
+function sessionFromLicense(key, license, user) {
+    return {
+        uid: user.uid,
+        userName: (user.displayName || '').trim() || license.userName || displayName(user),
+        userEmail: user.email,
+        licenseKey: key,
+        licenseType: license.type,
+        licenseExpiry: formatDate(license.expiresAt)
+    };
+}
+
 async function findLicenseForUser(user) {
     const snap = await getDocs(query(collection(db, 'licenses'), where('activatedUid', '==', user.uid), limit(1)));
     const found = snap.docs[0];
     return found ? { key: found.id, data: found.data() } : null;
 }
 
-function openDashboardWith(key, license) {
-    const session = sessionFromLicense(key, license);
+function openDashboardWith(key, license, user) {
+    const session = sessionFromLicense(key, license, user);
     writeJson(SESSION_KEY, session);
     populateDashboard(session);
     showDashboard();
 }
 
-async function restoreSession() {
-    if (!isConfigured) { removeKey(SESSION_KEY); return; }
+// -------------------------------------------------------------
+//  Aiguillage : connexion → offre ou tableau de bord
+// -------------------------------------------------------------
+let firstRouteDone = false;
+let pendingResumed = false;
 
-    const cached = readJson(SESSION_KEY);
-    if (cached) { populateDashboard(cached); showDashboard(); }
+async function route(user) {
+    currentUser = user && !user.isAnonymous ? user : null;
 
-    const user = await firstAuthState;
-    if (!user) {
-        if (cached) { removeKey(SESSION_KEY); showHomePage(); }
-        return;
+    if (!currentUser) {
+        // Ancienne session anonyme (avant les comptes) : on la ferme
+        if (user && user.isAnonymous) { try { await signOut(auth); } catch (e) { /* ignoré */ } }
+        removeKey(SESSION_KEY);
+        showAuthPage();
+    } else {
+        fillUserUi(currentUser);
+        const cached = readJson(SESSION_KEY);
+        if (cached && cached.uid === currentUser.uid) { populateDashboard(cached); showDashboard(); }
+
+        try {
+            const found = await findLicenseForUser(currentUser);
+            if (found && found.data.status === 'active' && !isExpired(found.data)) {
+                openDashboardWith(found.key, found.data, currentUser);
+            } else {
+                removeKey(SESSION_KEY);
+                showHomePage();
+                if (found && isExpired(found.data)) showAlert('Votre accès a expiré. Vous pouvez le renouveler ci-dessous.', 'error');
+                if (found && found.data.status === 'revoked') showAlert('Votre accès a été suspendu. Contactez le support.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            if (!(cached && cached.uid === currentUser.uid)) showHomePage(); // hors ligne : on garde le cache
+        }
+
+        if (!pendingResumed) { pendingResumed = true; resumePendingPayment(); }
     }
 
-    try {
-        const found = await findLicenseForUser(user);
-        if (found && found.data.status === 'active' && !isExpired(found.data)) {
-            openDashboardWith(found.key, found.data);
-        } else if (cached) {
-            removeKey(SESSION_KEY);
-            showHomePage();
-            showAlert(found && isExpired(found.data)
-                ? 'Votre licence a expiré. Renouvelez-la depuis la section Tarifs.'
-                : 'Votre licence n\'est plus active. Contactez l\'administrateur.', 'error');
-        }
-    } catch (err) {
-        console.error(err); // hors ligne : on garde l'affichage du cache
+    if (!firstRouteDone) {
+        firstRouteDone = true;
+        document.dispatchEvent(new Event('reboost:auth-ready'));
     }
 }
 
+if (auth) {
+    onAuthStateChanged(auth, route);
+    // Retour d'une connexion Google par redirection (si la fenêtre avait été bloquée)
+    getRedirectResult(auth).catch(err => showAlert(errorMessage(err), 'error'));
+} else {
+    showAuthPage();
+    document.dispatchEvent(new Event('reboost:auth-ready'));
+}
+
 // -------------------------------------------------------------
-//  Activation avec une clé
+//  Connexion, inscription, Google, mot de passe oublié
 // -------------------------------------------------------------
-$('license-form').addEventListener('submit', async function (e) {
+$('login-form').addEventListener('submit', async function (e) {
     e.preventDefault();
-    const btn = this.querySelector('button[type="submit"]');
+    const btn = $('login-submit');
+    const email = $('login-email').value.trim();
+    const password = $('login-password').value;
 
-    const licenseKey = $('license-key').value.trim().toUpperCase();
-    const userEmail = $('user-email').value.trim().toLowerCase();
-    const userName = $('user-name').value.trim();
-
-    if (!licenseKey || !userEmail || !userName) return showAlert('Veuillez remplir tous les champs.', 'error');
-    if (!isValidEmail(userEmail)) return showAlert('Veuillez saisir une adresse email valide.', 'error');
-    if (licenseKey.includes('/')) return showAlert('Clé de licence invalide.', 'error');
+    if (!isValidEmail(email)) return showAlert('Saisissez une adresse email valide.', 'error');
+    if (!password) return showAlert('Saisissez votre mot de passe.', 'error');
     if (!requireFirebase()) return;
 
     setLoading(btn, true);
     try {
-        const user = await ensureUser();
-        const ref = doc(db, 'licenses', licenseKey);
-        const snap = await getDoc(ref);
-        const license = snap.exists() ? snap.data() : null;
-
-        if (!license || license.status !== 'active') throw userError('Clé de licence invalide ou inactive. Contactez l\'administrateur.');
-        if (isExpired(license)) throw userError('Cette licence a expiré. Renouvelez-la depuis la section Tarifs.');
-        if (license.clientEmail && license.clientEmail !== userEmail) throw userError('Cette licence n\'est pas associée à cet email.');
-        // Même email = réactivation autorisée (nouvel appareil, navigateur vidé…)
-        if (license.activated && license.activatedBy !== userEmail) throw userError('Cette licence a déjà été activée.');
-
-        await updateDoc(ref, {
-            activated: true,
-            activatedAt: serverTimestamp(),
-            activatedBy: userEmail,
-            activatedUid: user.uid,
-            userName: userName
-        });
-
-        this.reset();
-        showAlert('Licence activée avec succès ! Redirection...', 'success');
-        setTimeout(() => openDashboardWith(licenseKey, { ...license, activatedBy: userEmail, userName }), 1500);
+        await signInWithEmailAndPassword(auth, email, password);
+        $('login-password').value = '';
+        // La suite (offre ou tableau de bord) est gérée par route()
     } catch (err) {
         showAlert(errorMessage(err), 'error');
     } finally {
@@ -247,14 +274,121 @@ $('license-form').addEventListener('submit', async function (e) {
     }
 });
 
-// -------------------------------------------------------------
-//  Déconnexion
-// -------------------------------------------------------------
-$('logout-btn').addEventListener('click', async function () {
+$('register-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const btn = $('register-submit');
+    const name = $('register-name').value.trim();
+    const email = $('register-email').value.trim();
+    const password = $('register-password').value;
+    const confirmation = $('register-password2').value;
+
+    if (name.length < 2) return showAlert('Indiquez votre nom complet.', 'error');
+    if (!isValidEmail(email)) return showAlert('Saisissez une adresse email valide.', 'error');
+    if (password.length < 8) return showAlert('Le mot de passe doit contenir au moins 8 caractères.', 'error');
+    if (password !== confirmation) return showAlert('Les deux mots de passe ne sont pas identiques.', 'error');
+    if (!requireFirebase()) return;
+
+    setLoading(btn, true);
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: name });
+        fillUserUi(cred.user);
+        this.reset();
+        showAlert(`Bienvenue ${name.split(' ')[0]} ! Votre compte est créé.`, 'success');
+    } catch (err) {
+        showAlert(errorMessage(err), 'error');
+    } finally {
+        setLoading(btn, false);
+    }
+});
+
+document.querySelectorAll('.google-btn').forEach(btn => btn.addEventListener('click', async () => {
+    if (!requireFirebase()) return;
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    setLoading(btn, true);
+    try {
+        await signInWithPopup(auth, provider);
+    } catch (err) {
+        if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+            // l'utilisateur a fermé la fenêtre : rien à signaler
+        } else if (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment') {
+            await signInWithRedirect(auth, provider); // repli : pleine page
+        } else {
+            showAlert(errorMessage(err), 'error');
+        }
+    } finally {
+        setLoading(btn, false);
+    }
+}));
+
+$('forgot-btn').addEventListener('click', async () => {
+    const email = $('login-email').value.trim();
+    if (!isValidEmail(email)) {
+        $('login-email').focus();
+        return showAlert('Saisissez d\'abord votre email dans le champ ci-dessus.', 'error');
+    }
+    if (!requireFirebase()) return;
+    try {
+        await sendPasswordResetEmail(auth, email);
+    } catch (err) {
+        if (err.code !== 'auth/user-not-found') return showAlert(errorMessage(err), 'error');
+    }
+    // Message identique que le compte existe ou non (ne révèle pas les comptes existants)
+    showAlert('Si un compte existe pour cet email, un lien de réinitialisation vient d\'être envoyé.', 'success');
+});
+
+// Déconnexion (tableau de bord et page d'offre)
+document.querySelectorAll('.logout-btn').forEach(btn => btn.addEventListener('click', async () => {
     if (!confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) return;
     removeKey(SESSION_KEY);
     try { if (auth) await signOut(auth); } catch (err) { console.error(err); }
-    showHomePage();
+    // route() affiche la page de connexion
+}));
+
+// -------------------------------------------------------------
+//  Activation avec une clé
+// -------------------------------------------------------------
+$('license-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const user = currentUser;
+    if (!user) return showAuthPage();
+
+    const licenseKey = $('license-key').value.trim().toUpperCase();
+    const userName = $('user-name').value.trim();
+
+    if (!licenseKey || !userName) return showAlert('Veuillez remplir tous les champs.', 'error');
+    if (licenseKey.includes('/')) return showAlert('Clé de licence invalide.', 'error');
+    if (!user.email) return showAlert('Votre compte n\'a pas d\'adresse email.', 'error');
+
+    setLoading(btn, true);
+    try {
+        const ref = doc(db, 'licenses', licenseKey);
+        const snap = await getDoc(ref);
+        const license = snap.exists() ? snap.data() : null;
+
+        if (!license || license.status !== 'active') throw userError('Clé de licence invalide ou inactive. Contactez l\'administrateur.');
+        if (isExpired(license)) throw userError('Cette licence a expiré.');
+        if (license.clientEmail && license.clientEmail !== user.email.toLowerCase()) throw userError('Cette clé est réservée à une autre adresse email.');
+        if (license.activated && license.activatedUid !== user.uid) throw userError('Cette clé est déjà utilisée par un autre compte.');
+
+        await updateDoc(ref, {
+            activated: true,
+            activatedAt: serverTimestamp(),
+            activatedBy: user.email,
+            activatedUid: user.uid,
+            userName: userName
+        });
+
+        $('license-key').value = '';
+        showAlert('Licence activée avec succès ! Redirection...', 'success');
+        setTimeout(() => openDashboardWith(licenseKey, { ...license, userName }, user), 1200);
+    } catch (err) {
+        showAlert(errorMessage(err), 'error');
+    } finally {
+        setLoading(btn, false);
+    }
 });
 
 // =============================================================
@@ -300,39 +434,40 @@ async function loadPlans() {
     }
 }
 
-// Bouton « Obtenir mon accès à vie » de la section Tarifs
+// Bouton « Acheter la formation » de la section Tarifs
 document.querySelectorAll('.choose-plan').forEach(btn => {
     btn.addEventListener('click', () => {
         $('buy-plan').value = btn.dataset.plan;
         updateTotal();
         openAuthTab('buy');
         document.getElementById('activation').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => $('buy-name').focus({ preventScroll: true }), 700);
+        setTimeout(() => $('buy-phone').focus({ preventScroll: true }), 700);
     });
 });
 
 $('buy-form').addEventListener('submit', async function (e) {
     e.preventDefault();
     const btn = $('buy-submit');
+    const user = currentUser;
+    if (!user) return showAuthPage();
+
     const plan = selectedPlan();
     const name = $('buy-name').value.trim();
-    const email = $('buy-email').value.trim().toLowerCase();
+    const email = (user.email || '').toLowerCase();
     const phone = $('buy-phone').value.trim();
 
     if (!plan) return showAlert('Choisissez une formule.', 'error');
     if (!name) return showAlert('Indiquez votre nom complet.', 'error');
-    if (!isValidEmail(email)) return showAlert('Veuillez saisir une adresse email valide.', 'error');
+    if (!isValidEmail(email)) return showAlert('Votre compte n\'a pas d\'adresse email valide.', 'error');
     if (phone && !/^\+?[\d\s.\-()]{8,20}$/.test(phone)) return showAlert('Numéro de téléphone invalide.', 'error');
-    if (!requireFirebase()) return;
 
     setLoading(btn, true);
     try {
-        const user = await ensureUser();
         const result = await apiFetch('create-checkout.php', {
             method: 'POST',
             body: JSON.stringify({ plan, name, email, phone, uid: user.uid })
         });
-        writeJson(PENDING_ORDER_KEY, { orderId: result.orderId, checkoutUrl: result.checkoutUrl, createdAt: Date.now() });
+        writeJson(PENDING_ORDER_KEY, { orderId: result.orderId, checkoutUrl: result.checkoutUrl, uid: user.uid, createdAt: Date.now() });
         showAlert('Redirection vers la page de paiement sécurisée…', 'success');
         setTimeout(() => { window.location.href = result.checkoutUrl; }, 600);
     } catch (err) {
@@ -366,7 +501,7 @@ function renderPayment(state, data = {}) {
                 <div><small>Votre clé de licence</small><code id="pay-key-value">${escapeHtml(data.licenseKey || '')}</code></div>
                 <button type="button" class="btn btn-secondary btn-small" id="pay-copy"><i class="fas fa-copy"></i></button>
             </div>
-            <p class="pay-hint">Conservez cette clé : elle vous permet de retrouver votre accès sur un autre appareil.</p>
+            <p class="pay-hint">Votre accès est lié à votre compte : connectez-vous sur n'importe quel appareil pour le retrouver.</p>
             <div class="pay-actions">
                 <button type="button" class="btn btn-success btn-block" id="pay-go">${data.linked ? 'Accéder à mon tableau de bord' : 'Activer ma licence'} <i class="fas fa-arrow-right"></i></button>
             </div>`,
@@ -405,6 +540,7 @@ function renderPayment(state, data = {}) {
     on('pay-retry', () => startPolling(data.orderId, data.checkoutUrl));
     on('pay-again', () => {
         paymentModal.classList.remove('open');
+        showHomePage();
         openAuthTab('buy');
         document.getElementById('tarifs').scrollIntoView({ behavior: 'smooth' });
     });
@@ -418,10 +554,9 @@ function renderPayment(state, data = {}) {
         if (data.linked) {
             showDashboard();
         } else {
-            // Paiement fait depuis un autre navigateur : activation avec la clé
+            // Paiement fait avec un autre compte : activation avec la clé
+            showHomePage();
             $('license-key').value = data.licenseKey || '';
-            $('user-email').value = data.email || '';
-            $('user-name').value = data.name || '';
             openAuthTab('license');
             document.getElementById('activation').scrollIntoView({ behavior: 'smooth' });
         }
@@ -432,11 +567,10 @@ async function onOrderPaid(orderId, status) {
     removeKey(PENDING_ORDER_KEY);
     let linked = false;
     try {
-        const user = await firstAuthState;
-        if (user) {
-            const found = await findLicenseForUser(user);
+        if (currentUser) {
+            const found = await findLicenseForUser(currentUser);
             if (found && found.key === status.licenseKey) {
-                const session = sessionFromLicense(found.key, found.data);
+                const session = sessionFromLicense(found.key, found.data, currentUser);
                 writeJson(SESSION_KEY, session);
                 populateDashboard(session);
                 linked = true;
@@ -477,29 +611,33 @@ function startPolling(orderId, checkoutUrl) {
     tick();
 }
 
-function resumePendingPayment() {
+// Numéro de commande au retour de SasPay (?commande=…), lu dès le chargement
+const validOrderId = id => typeof id === 'string' && /^[A-Za-z0-9]{20}$/.test(id);
+const returnedOrderId = (() => {
     const params = new URLSearchParams(location.search);
-    const fromUrl = params.get('commande');
-    const pending = readJson(PENDING_ORDER_KEY);
-
-    if (fromUrl) {
+    const id = params.get('commande');
+    if (id !== null) {
         // Nettoyer l'adresse (évite de relancer la vérification au rechargement)
         params.delete('commande');
-        const clean = location.pathname + (params.toString() ? `?${params}` : '') + location.hash;
-        history.replaceState(null, '', clean);
+        history.replaceState(null, '', location.pathname + (params.toString() ? `?${params}` : '') + location.hash);
     }
+    return validOrderId(id) ? id : null;
+})();
 
-    const validId = id => typeof id === 'string' && /^[A-Za-z0-9]{20}$/.test(id);
+// Appelée une fois l'utilisateur connecté
+function resumePendingPayment() {
+    const pending = readJson(PENDING_ORDER_KEY);
 
     // Retour direct depuis SasPay : on affiche la confirmation
-    if (validId(fromUrl)) {
-        const checkoutUrl = pending && pending.orderId === fromUrl ? pending.checkoutUrl : null;
-        return startPolling(fromUrl, checkoutUrl);
+    if (returnedOrderId) {
+        const checkoutUrl = pending && pending.orderId === returnedOrderId ? pending.checkoutUrl : null;
+        return startPolling(returnedOrderId, checkoutUrl);
     }
 
     // Commande commencée lors d'une visite précédente : vérification discrète
     if (!pending) return;
-    if (!validId(pending.orderId) || Date.now() - pending.createdAt > 24 * 3600 * 1000) {
+    if (!validOrderId(pending.orderId) || Date.now() - pending.createdAt > 24 * 3600 * 1000
+        || (pending.uid && currentUser && pending.uid !== currentUser.uid)) {
         return removeKey(PENDING_ORDER_KEY);
     }
     apiFetch(`order-status.php?order=${encodeURIComponent(pending.orderId)}`)
@@ -514,5 +652,3 @@ function resumePendingPayment() {
 //  Démarrage
 // -------------------------------------------------------------
 loadPlans();
-restoreSession();
-resumePendingPayment();

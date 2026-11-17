@@ -11,6 +11,13 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Vrai compte client (email / mot de passe ou Google), pas une session anonyme
+    function hasAccount() {
+      return signedIn()
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        && request.auth.token.email is string;
+    }
+
     // Un administrateur = un document admins/{son UID}, créé à la main dans la console
     function isAdmin() {
       return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
@@ -34,26 +41,26 @@ service cloud.firestore {
       allow read, write: if isAdmin();
 
       // Un client peut lire UNE licence s'il connaît sa clé (impossible de lister les clés)
-      allow get: if signedIn();
+      allow get: if hasAccount();
 
-      // Un client peut retrouver la licence liée à son appareil
-      allow list: if signedIn() && resource.data.activatedUid == request.auth.uid;
+      // Un client peut retrouver la licence liée à son compte
+      allow list: if hasAccount() && resource.data.activatedUid == request.auth.uid;
 
-      // Un client peut activer une licence (ou la relier à un nouvel appareil avec le même email)
-      allow update: if signedIn()
+      // Un client peut activer une clé avec son compte : clé libre (ou déjà à lui),
+      // et réservée à son email si l'administrateur l'a restreinte
+      allow update: if hasAccount()
         && resource.data.status == 'active'
         && (resource.data.expiresAt == null || resource.data.expiresAt > request.time)
         && (resource.data.clientEmail == null
-            || resource.data.clientEmail == request.resource.data.activatedBy)
+            || resource.data.clientEmail == request.auth.token.email.lower())
         && (resource.data.activated == false
-            || resource.data.activatedBy == request.resource.data.activatedBy)
+            || resource.data.activatedUid == request.auth.uid)
         && request.resource.data.diff(resource.data).affectedKeys()
              .hasOnly(['activated', 'activatedAt', 'activatedBy', 'activatedUid', 'userName'])
         && request.resource.data.activated == true
         && request.resource.data.activatedUid == request.auth.uid
         && request.resource.data.activatedAt == request.time
-        && request.resource.data.activatedBy is string
-        && request.resource.data.activatedBy.size() <= 200
+        && request.resource.data.activatedBy == request.auth.token.email
         && request.resource.data.userName is string
         && request.resource.data.userName.size() > 0
         && request.resource.data.userName.size() <= 100;

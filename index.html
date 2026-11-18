@@ -1759,6 +1759,51 @@
         .training-item h4 { font-family: var(--font-display); font-size: 1.02rem; font-weight: 600; }
         .training-item p { color: var(--muted); font-size: .88rem; }
 
+        /* Fenêtre Formations : langue + canaux (Telegram, Google Drive) */
+        .training-modal { max-width: 520px; }
+        .training-modal h2 { padding-right: 2.5rem; font-size: clamp(1.3rem, 5vw, 1.7rem); white-space: nowrap; }
+        .training-modules { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 1.4rem; }
+        .training-modules span {
+            display: inline-flex; align-items: center; gap: .45rem;
+            padding: .4rem .75rem; border-radius: 999px;
+            font-size: .8rem; font-weight: 600; color: var(--text-2);
+            background: rgba(255,255,255,.04); border: 1px solid var(--border);
+        }
+        .training-modules i { color: var(--amber); }
+        .training-label { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 .6rem; }
+        .lang-switch {
+            display: grid; grid-template-columns: 1fr 1fr; gap: .4rem;
+            padding: .35rem; margin-bottom: 1.4rem;
+            border-radius: 14px; background: rgba(4, 9, 20, .7); border: 1px solid var(--border);
+        }
+        .lang-btn {
+            padding: .75rem; border: 0; border-radius: 10px; cursor: pointer;
+            font-family: var(--font-display); font-weight: 600; font-size: .95rem;
+            color: var(--muted); background: transparent; transition: color .25s, background .25s, box-shadow .25s;
+        }
+        .lang-btn:hover { color: var(--text); }
+        .lang-btn.active { color: #fff; background: linear-gradient(135deg, rgba(31,123,255,.4), rgba(42,212,255,.2)); box-shadow: inset 0 0 0 1px rgba(42,212,255,.4); }
+        .channel-list { display: grid; gap: .8rem; }
+        .channel {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1rem 1.1rem; border-radius: 16px;
+            text-decoration: none; color: var(--text);
+            background: rgba(255,255,255,.03); border: 1px solid var(--border-strong);
+            transition: transform .3s var(--ease), border-color .3s, background .3s, box-shadow .3s;
+        }
+        .channel:not(.disabled):not(.is-loading):hover { transform: translateY(-3px); }
+        .channel.telegram:not(.disabled):hover { border-color: rgba(42,171,238,.7); background: rgba(42,171,238,.1); box-shadow: 0 14px 34px -14px rgba(42,171,238,.7); }
+        .channel.drive:not(.disabled):hover { border-color: rgba(52,168,83,.7); background: rgba(52,168,83,.1); box-shadow: 0 14px 34px -14px rgba(52,168,83,.7); }
+        .ch-icon { flex: 0 0 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; font-size: 1.5rem; color: #fff; }
+        .telegram .ch-icon { background: linear-gradient(135deg, #37bbfe, #1e96d1); }
+        .drive .ch-icon { background: linear-gradient(135deg, #34a853, #188038); }
+        .ch-text { display: grid; flex: 1; min-width: 0; }
+        .ch-text strong { font-family: var(--font-display); font-size: 1.05rem; }
+        .ch-text small { font-size: .8rem; color: var(--muted); }
+        .ch-go { color: var(--muted); }
+        .channel.disabled, .channel.is-loading { cursor: default; opacity: .55; }
+        .channel.disabled .ch-go, .channel.is-loading .ch-go { display: none; }
+
         .toast-container {
             position: fixed;
             top: 1.2rem;
@@ -2356,30 +2401,33 @@
 
     <!-- Modal des formations -->
     <div id="training-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="training-title">
-        <div class="modal-content glass glow-border">
+        <div class="modal-content glass glow-border training-modal">
             <span class="close" role="button" tabindex="0" aria-label="Fermer">&times;</span>
             <h2 id="training-title">Formations <span class="grad-text">RE-BOOST</span></h2>
-            <div class="modal-body">
-                <p>Sélectionnez la formation que vous souhaitez télécharger :</p>
 
-                <div class="training-list">
-                    <div class="training-item">
-                        <div class="t-icon"><i class="fab fa-tiktok"></i></div>
-                        <div class="t-body">
-                            <h4>Formation TikTok Masterclass</h4>
-                            <p>Apprenez à monétiser votre compte TikTok efficacement</p>
-                        </div>
-                        <a href="#" class="btn btn-primary btn-small"><i class="fas fa-download"></i> Télécharger</a>
-                    </div>
-                    <div class="training-item">
-                        <div class="t-icon"><i class="fas fa-rocket"></i></div>
-                        <div class="t-body">
-                            <h4>Comment booster les réseaux sociaux</h4>
-                            <p>Augmentez votre visibilité et vos abonnés</p>
-                        </div>
-                        <a href="#" class="btn btn-primary btn-small"><i class="fas fa-download"></i> Télécharger</a>
-                    </div>
-                </div>
+            <div class="training-modules">
+                <span><i class="fab fa-tiktok"></i> TikTok Masterclass</span>
+                <span><i class="fas fa-rocket"></i> Comment booster les réseaux sociaux</span>
+            </div>
+
+            <p class="training-label">Langue</p>
+            <div class="lang-switch" role="tablist" aria-label="Langue de la formation">
+                <button type="button" class="lang-btn active" data-lang="fr" role="tab">Français</button>
+                <button type="button" class="lang-btn" data-lang="ln" role="tab">Lingala</button>
+            </div>
+
+            <p class="training-label">Suivre la formation sur</p>
+            <div class="channel-list">
+                <a class="channel telegram is-loading" id="channel-telegram" target="_blank" rel="noopener" aria-disabled="true">
+                    <span class="ch-icon"><i class="fab fa-telegram"></i></span>
+                    <span class="ch-text"><strong>Telegram</strong><small>Chargement…</small></span>
+                    <i class="fas fa-arrow-up-right-from-square ch-go"></i>
+                </a>
+                <a class="channel drive is-loading" id="channel-drive" target="_blank" rel="noopener" aria-disabled="true">
+                    <span class="ch-icon"><i class="fab fa-google-drive"></i></span>
+                    <span class="ch-text"><strong>Google Drive</strong><small>Chargement…</small></span>
+                    <i class="fas fa-arrow-up-right-from-square ch-go"></i>
+                </a>
             </div>
         </div>
     </div>

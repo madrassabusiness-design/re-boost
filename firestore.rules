@@ -36,6 +36,39 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Licence active et appartenant bien à ce compte ?
+    function ownsActiveLicense(key) {
+      let lic = get(/databases/$(database)/documents/licenses/$(key)).data;
+      return lic.activatedUid == request.auth.uid
+        && lic.status == 'active'
+        && (lic.expiresAt == null || lic.expiresAt > request.time);
+    }
+
+    // Client avec un accès actif (via sa fiche members/{UID})
+    function isMember() {
+      return hasAccount()
+        && ownsActiveLicense(get(/databases/$(database)/documents/members/$(request.auth.uid)).data.licenseKey);
+    }
+
+    // Fiche membre : relie le compte à sa licence (créée par le site du client)
+    match /members/{uid} {
+      allow read: if isAdmin() || (hasAccount() && request.auth.uid == uid);
+      allow create, update: if hasAccount()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['licenseKey', 'updatedAt'])
+        && request.resource.data.licenseKey is string
+        && request.resource.data.updatedAt == request.time
+        && ownsActiveLicense(request.resource.data.licenseKey);
+      allow delete: if isAdmin();
+    }
+
+    // Liens des formations (Telegram, Google Drive) : réservés aux clients actifs,
+    // modifiables uniquement par l'administrateur
+    match /training/{docId} {
+      allow read: if isAdmin() || isMember();
+      allow write: if isAdmin();
+    }
+
     match /licenses/{key} {
       // L'administrateur peut tout faire
       allow read, write: if isAdmin();

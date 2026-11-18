@@ -22,7 +22,7 @@ import {
     signInWithRedirect, getRedirectResult, signOut
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {
-    getFirestore, doc, getDoc, updateDoc, collection, query, where, limit, getDocs, serverTimestamp
+    getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, limit, getDocs, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import { firebaseConfig } from './firebase-config.js';
 
@@ -186,6 +186,21 @@ function openDashboardWith(key, license, user) {
     writeJson(SESSION_KEY, session);
     populateDashboard(session);
     showDashboard();
+    memberReady = ensureMember(key, user);
+}
+
+// Fiche « membre » (members/{UID}) : elle autorise la lecture des liens de formation.
+// Les règles Firestore vérifient que la licence indiquée est bien active et à ce compte.
+let memberReady = Promise.resolve();
+async function ensureMember(key, user) {
+    try {
+        const ref = doc(db, 'members', user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists() && snap.data().licenseKey === key) return;
+        await setDoc(ref, { licenseKey: key, updatedAt: serverTimestamp() });
+    } catch (err) {
+        console.warn('[RE-BOOST] Fiche membre :', err.message);
+    }
 }
 
 // -------------------------------------------------------------
@@ -201,6 +216,7 @@ async function route(user) {
         // Ancienne session anonyme (avant les comptes) : on la ferme
         if (user && user.isAnonymous) { try { await signOut(auth); } catch (e) { /* ignoré */ } }
         removeKey(SESSION_KEY);
+        trainingLinks = null; // liens de formation réservés au compte connecté
         showAuthPage();
     } else {
         fillUserUi(currentUser);
@@ -391,6 +407,68 @@ $('license-form').addEventListener('submit', async function (e) {
         setLoading(btn, false);
     }
 });
+
+// =============================================================
+//  FORMATIONS : langue (Français / Lingala) + canaux (Telegram, Google Drive)
+//  Liens enregistrés par l'administrateur dans Firestore : training/links
+//  { fr: { telegram, drive }, ln: { telegram, drive } }
+// =============================================================
+const LANG_KEY = 'reboost_lang';
+let trainingLinks = null;
+let trainingLang = (() => { try { return localStorage.getItem(LANG_KEY) || 'fr'; } catch (e) { return 'fr'; } })();
+
+function renderChannels(state) {
+    const channels = { telegram: $('channel-telegram'), drive: $('channel-drive') };
+    for (const [name, el] of Object.entries(channels)) {
+        const small = el.querySelector('small');
+        el.classList.remove('is-loading', 'disabled');
+        el.removeAttribute('href');
+        el.setAttribute('aria-disabled', 'true');
+        if (state === 'loading') {
+            el.classList.add('is-loading');
+            small.textContent = 'Chargement…';
+        } else if (state === 'error') {
+            el.classList.add('disabled');
+            small.textContent = 'Indisponible pour le moment';
+        } else {
+            const url = trainingLinks?.[trainingLang]?.[name];
+            if (url && /^https:\/\//i.test(url)) {
+                el.href = url;
+                el.removeAttribute('aria-disabled');
+                small.textContent = name === 'telegram' ? 'Rejoindre le canal' : 'Ouvrir le dossier';
+            } else {
+                el.classList.add('disabled');
+                small.textContent = 'Bientôt disponible';
+            }
+        }
+    }
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === trainingLang));
+}
+
+async function loadTrainingLinks() {
+    if (!currentUser) return;
+    renderChannels(trainingLinks ? 'ready' : 'loading');
+    try {
+        await memberReady;
+        const snap = await getDoc(doc(db, 'training', 'links'));
+        trainingLinks = snap.exists() ? snap.data() : {};
+        renderChannels('ready');
+    } catch (err) {
+        console.error(err);
+        renderChannels(trainingLinks ? 'ready' : 'error');
+    }
+}
+
+$('training-btn').addEventListener('click', loadTrainingLinks);
+document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => {
+    trainingLang = btn.dataset.lang;
+    try { localStorage.setItem(LANG_KEY, trainingLang); } catch (e) { /* ignoré */ }
+    renderChannels(trainingLinks ? 'ready' : 'loading');
+}));
+// Lien désactivé : ne rien ouvrir
+document.querySelectorAll('.channel').forEach(el => el.addEventListener('click', e => {
+    if (!el.getAttribute('href')) e.preventDefault();
+}));
 
 // =============================================================
 //  ACHAT EN LIGNE (SasPay)

@@ -258,7 +258,7 @@ function render() {
 // -------------------------------------------------------------
 //  Navigation
 // -------------------------------------------------------------
-const TITLES = { overview: "Vue d'ensemble", orders: 'Paiements', licenses: 'Licences', new: 'Nouvelle licence' };
+const TITLES = { overview: "Vue d'ensemble", orders: 'Paiements', licenses: 'Licences', new: 'Nouvelle licence', training: 'Formations' };
 
 function showView(view) {
     state.view = view;
@@ -266,8 +266,60 @@ function showView(view) {
     document.querySelectorAll('.view').forEach(v => { v.hidden = v.id !== `view-${view}`; });
     $('view-title').textContent = TITLES[view];
     $('search-box').style.visibility = (view === 'licenses' || view === 'orders') ? 'visible' : 'hidden';
+    if (view === 'training') loadTrainingLinks();
     render();
 }
+
+// -------------------------------------------------------------
+//  Formations : liens Telegram / Google Drive par langue (training/links)
+// -------------------------------------------------------------
+const TRAINING_FIELDS = [['fr', 'telegram'], ['fr', 'drive'], ['ln', 'telegram'], ['ln', 'drive']];
+
+function refreshTestLinks() {
+    TRAINING_FIELDS.forEach(([lang, channel]) => {
+        const input = $(`tr-${lang}-${channel}`);
+        const test = input.parentElement.querySelector('.test-link');
+        const url = input.value.trim();
+        if (/^https:\/\//i.test(url)) test.href = url; else test.removeAttribute('href');
+    });
+}
+
+async function loadTrainingLinks() {
+    try {
+        const snap = await getDoc(doc(db, 'training', 'links'));
+        const data = snap.exists() ? snap.data() : {};
+        TRAINING_FIELDS.forEach(([lang, channel]) => { $(`tr-${lang}-${channel}`).value = data?.[lang]?.[channel] || ''; });
+        refreshTestLinks();
+    } catch (err) {
+        toast(authError(err), 'error');
+    }
+}
+
+TRAINING_FIELDS.forEach(([lang, channel]) => $(`tr-${lang}-${channel}`).addEventListener('input', refreshTestLinks));
+
+$('training-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = $('training-save');
+    const data = { fr: {}, ln: {} };
+    for (const [lang, channel] of TRAINING_FIELDS) {
+        const url = $(`tr-${lang}-${channel}`).value.trim();
+        if (url && !/^https:\/\/\S+$/i.test(url)) {
+            $(`tr-${lang}-${channel}`).focus();
+            return toast('Chaque lien doit commencer par https://', 'error');
+        }
+        data[lang][channel] = url;
+    }
+    setLoading(btn, true);
+    try {
+        await setDoc(doc(db, 'training', 'links'), { ...data, updatedAt: serverTimestamp(), updatedBy: auth.currentUser.email || '' });
+        refreshTestLinks();
+        toast('Liens des formations enregistrés.');
+    } catch (err) {
+        toast(authError(err), 'error');
+    } finally {
+        setLoading(btn, false);
+    }
+});
 
 document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
 document.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => showView(b.dataset.goto)));

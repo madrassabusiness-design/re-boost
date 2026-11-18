@@ -263,6 +263,17 @@
         .toast.error i { color: var(--error); }
         .toast.out { opacity: 0; transform: translateY(10px); transition: all .35s; }
 
+        /* Liens des formations */
+        .training-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; margin-bottom: 1.2rem; }
+        .training-grid fieldset { border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.1rem .2rem; }
+        .training-grid legend { padding: 0 .5rem; font-family: var(--font-display); font-weight: 600; color: var(--text); }
+        .input.with-test input { padding-right: 3rem; }
+        .test-link { position: absolute; right: .5rem; top: 50%; transform: translateY(-50%); width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: var(--muted); text-decoration: none; }
+        .test-link:hover { color: #fff; background: rgba(255,255,255,.06); }
+        .test-link:not([href]) { opacity: .3; pointer-events: none; }
+        .training-note { margin-top: 1rem; font-size: .82rem; color: var(--muted); }
+        @media (max-width: 900px) { .training-grid { grid-template-columns: 1fr; } }
+
         /* Bandeau « Nouvelle version disponible » */
         .update-banner {
             position: fixed; left: 50%; bottom: 1.2rem; z-index: 200;
@@ -351,6 +362,7 @@
                 <button data-view="orders"><i class="fas fa-credit-card"></i> Paiements <span class="count" id="nav-pending" hidden></span></button>
                 <button data-view="licenses"><i class="fas fa-key"></i> Licences</button>
                 <button data-view="new"><i class="fas fa-wand-magic-sparkles"></i> Nouvelle licence</button>
+                <button data-view="training"><i class="fas fa-graduation-cap"></i> Formations</button>
             </nav>
             <div class="sidebar-foot">
                 <button type="button" class="btn btn-ghost btn-sm btn-block install-btn" hidden style="margin-bottom:.6rem"><i class="fas fa-download"></i> Installer l'application</button>
@@ -422,6 +434,41 @@
                             </div>
                         </div>
                         <div class="table-wrap" id="licenses-table"></div>
+                    </div>
+                </section>
+
+                <!-- Formations : liens Telegram et Google Drive par langue -->
+                <section class="view" id="view-training" hidden>
+                    <div class="panel">
+                        <div class="panel-head"><h2><i class="fas fa-graduation-cap"></i> Liens des formations</h2></div>
+                        <form class="form-body" id="training-form" novalidate>
+                            <div class="training-grid">
+                                <fieldset>
+                                    <legend>Français</legend>
+                                    <div class="field">
+                                        <label for="tr-fr-telegram"><i class="fab fa-telegram" style="color:#37bbfe"></i> Telegram</label>
+                                        <div class="input with-test"><i class="fas fa-link"></i><input type="url" id="tr-fr-telegram" placeholder="https://t.me/…"><a class="test-link" target="_blank" rel="noopener" title="Tester le lien"><i class="fas fa-arrow-up-right-from-square"></i></a></div>
+                                    </div>
+                                    <div class="field">
+                                        <label for="tr-fr-drive"><i class="fab fa-google-drive" style="color:#34a853"></i> Google Drive</label>
+                                        <div class="input with-test"><i class="fas fa-link"></i><input type="url" id="tr-fr-drive" placeholder="https://drive.google.com/…"><a class="test-link" target="_blank" rel="noopener" title="Tester le lien"><i class="fas fa-arrow-up-right-from-square"></i></a></div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Lingala</legend>
+                                    <div class="field">
+                                        <label for="tr-ln-telegram"><i class="fab fa-telegram" style="color:#37bbfe"></i> Telegram</label>
+                                        <div class="input with-test"><i class="fas fa-link"></i><input type="url" id="tr-ln-telegram" placeholder="https://t.me/…"><a class="test-link" target="_blank" rel="noopener" title="Tester le lien"><i class="fas fa-arrow-up-right-from-square"></i></a></div>
+                                    </div>
+                                    <div class="field">
+                                        <label for="tr-ln-drive"><i class="fab fa-google-drive" style="color:#34a853"></i> Google Drive</label>
+                                        <div class="input with-test"><i class="fas fa-link"></i><input type="url" id="tr-ln-drive" placeholder="https://drive.google.com/…"><a class="test-link" target="_blank" rel="noopener" title="Tester le lien"><i class="fas fa-arrow-up-right-from-square"></i></a></div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="training-save"><i class="fas fa-floppy-disk"></i> Enregistrer</button>
+                            <p class="training-note">Ces liens ne sont visibles que par les clients avec une licence active. Un lien vide affiche « Bientôt disponible ».</p>
+                        </form>
                     </div>
                 </section>
 

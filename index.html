@@ -1419,6 +1419,28 @@
         .license-modal h2 { display: flex; align-items: center; gap: .6rem; font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 1.4rem; }
         .license-modal h2 i { color: var(--amber); font-size: 1.1rem; }
 
+        /* Mentions légales */
+        .legal-link {
+            display: block;
+            margin: 1.2rem auto 0;
+            background: none;
+            border: 0;
+            padding: .3rem .5rem;
+            font: inherit;
+            font-size: .8rem;
+            color: var(--muted);
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .legal-link:hover { color: var(--text-2); }
+        .legal-modal { max-width: 640px; text-align: left; }
+        .legal-modal h2 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: .2rem; padding-right: 2.5rem; }
+        .legal-updated { font-size: .78rem; color: var(--muted); margin-bottom: 1.2rem; }
+        .legal-modal h3 { font-family: var(--font-display); font-size: 1rem; color: var(--text); margin: 1.3rem 0 .4rem; }
+        .legal-modal p { font-size: .9rem; color: var(--text-2); line-height: 1.65; margin-bottom: .5rem; }
+        .legal-modal a { color: var(--cyan); }
+
         /* Bouton « Mettre à jour » toujours visible */
         .update-check-btn.is-loading > i { display: none; }
         .update-fab {
@@ -2095,6 +2117,7 @@
                         <button type="submit" class="btn btn-success btn-block" id="register-submit">Créer mon compte <i class="fas fa-arrow-right"></i></button>
                         <p class="switch-note">Déjà inscrit ? <button type="button" class="link-btn" data-switch="login">Se connecter</button></p>
                     </form>
+                    <button type="button" class="legal-link" data-open-legal>Mentions légales</button>
                 </div>
             </section>
         </div>
@@ -2155,6 +2178,7 @@
                 </div>
 
                 <button type="button" class="link-btn key-link" id="open-license"><i class="fas fa-key"></i> J'ai déjà une clé</button>
+                <button type="button" class="legal-link" data-open-legal>Mentions légales</button>
             </div>
         </main>
 
@@ -2246,7 +2270,7 @@
                         <p>&copy; <span class="year">2025</span> RE-BOOST. Tous droits réservés.</p>
                     </div>
                     <div class="footer-links">
-                        <a href="#" id="mentions-legales-dashboard">Mentions légales</a>
+                        <a href="#" id="mentions-legales-dashboard" data-open-legal>Mentions légales</a>
                         <a href="mailto:masamunatresor6@gmail.com">Contact</a>
                     </div>
                 </div>
@@ -2266,6 +2290,44 @@
                 <li><span>2</span><p>Choisissez <strong>« Sur l'écran d'accueil »</strong> <i class="far fa-square-plus"></i></p></li>
                 <li><span>3</span><p>Touchez <strong>Ajouter</strong> en haut à droite</p></li>
             </ol>
+        </div>
+    </div>
+
+    <!-- Mentions légales -->
+    <div id="legal-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="legal-title">
+        <div class="modal-content glass glow-border legal-modal">
+            <span class="close" role="button" tabindex="0" aria-label="Fermer">&times;</span>
+            <h2 id="legal-title">Mentions légales</h2>
+            <p class="legal-updated">Dernière mise à jour : novembre 2026</p>
+
+            <h3>1. Éditeur du site</h3>
+            <p>Le site et l'application <strong>RE-BOOST</strong> proposent une formation en boostage des réseaux sociaux.</p>
+            <p>Responsable de la publication : Trésor Masamuna<br>
+               Email : <a href="mailto:masamunatresor6@gmail.com">masamunatresor6@gmail.com</a><br>
+               Téléphone / WhatsApp : +243 89 66 39 509<br>
+               République démocratique du Congo</p>
+
+            <h3>2. Hébergement</h3>
+            <p>Site hébergé par <strong>LWS (Ligne Web Services)</strong>, 10 rue Penthièvre, 75008 Paris, France — <a href="https://www.lws.fr" target="_blank" rel="noopener">www.lws.fr</a>.<br>
+               Comptes utilisateurs et données : <strong>Google Firebase</strong> (Google LLC).</p>
+
+            <h3>3. Paiements</h3>
+            <p>Les paiements par Mobile Money (Airtel Money, Orange Money, Vodacom) sont traités par <strong>SasPay</strong>. RE-BOOST ne conserve aucune donnée de paiement.</p>
+
+            <h3>4. Accès à la formation</h3>
+            <p>L'achat donne un accès à vie, personnel et non transférable, lié au compte de l'acheteur. Le partage du compte ou des contenus peut entraîner la suspension de l'accès.</p>
+
+            <h3>5. Propriété intellectuelle</h3>
+            <p>Les vidéos, textes, logos et contenus de RE-BOOST sont protégés. Toute reproduction, diffusion ou revente sans autorisation écrite est interdite.</p>
+
+            <h3>6. Données personnelles</h3>
+            <p>RE-BOOST collecte uniquement les données nécessaires à votre compte et à votre accès : nom, adresse email et historique d'achat. Elles ne sont ni vendues ni cédées. Vous pouvez demander à les consulter, les corriger ou les supprimer en écrivant à <a href="mailto:masamunatresor6@gmail.com">masamunatresor6@gmail.com</a>.</p>
+
+            <h3>7. Responsabilité</h3>
+            <p>RE-BOOST transmet des méthodes et des conseils ; les résultats obtenus sur les réseaux sociaux dépendent de chaque utilisateur et ne sont pas garantis. Le service « Booster mes réseaux » renvoie vers <strong>clic-booster.com</strong>, un site tiers soumis à ses propres conditions.</p>
+
+            <h3>8. Contact</h3>
+            <p>Pour toute question : <a href="mailto:masamunatresor6@gmail.com">masamunatresor6@gmail.com</a> ou WhatsApp au +243 89 66 39 509.</p>
         </div>
     </div>
 
@@ -2586,6 +2648,12 @@
         document.querySelectorAll('[data-switch]').forEach(link => {
             link.addEventListener('click', () => openAuthTab(link.dataset.switch));
         });
+
+        // Mentions légales
+        document.querySelectorAll('[data-open-legal]').forEach(el => el.addEventListener('click', e => {
+            e.preventDefault();
+            document.getElementById('legal-modal').classList.add('open');
+        }));
 
         // Afficher / masquer le mot de passe
         document.querySelectorAll('.pw-toggle').forEach(btn => {

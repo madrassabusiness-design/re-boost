@@ -10,6 +10,6 @@ return [
     // Devise et offre vendue. months = 0 : accès à vie (pas d'expiration)
     'currency' => 'CDF',
     'plans' => [
-        'lifetime' => ['name' => 'Formation boostage réseaux sociaux — accès à vie', 'months' => 0, 'price' => '1000.00'],
+        'lifetime' => ['name' => 'Formation boostage réseaux sociaux — accès à vie', 'months' => 0, 'price' => '25000.00'],
     ],
 ];
